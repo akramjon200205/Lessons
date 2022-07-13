@@ -2,7 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 Widget scaleWidget(
-    {required Widget child, required Function onTap, double scale = 0.9, int time = 200, bool isWait = false}) {
+    {required Widget child,
+    required Function onTap,
+    double scale = 0.9,
+    int time = 100,
+    bool isWait = false}) {
   bool pressed = false;
   return StatefulBuilder(
       builder: (context, setState) => GestureDetector(
@@ -20,7 +24,8 @@ Widget scaleWidget(
               });
             },
             child: AnimatedTransform(
-              transform: Matrix4.diagonal3Values(pressed ? scale : 1, pressed ? scale : 1, 1.0),
+              transform: Matrix4.diagonal3Values(
+                  pressed ? scale : 1, pressed ? scale : 1, 1.0),
               transformHitTests: true,
               duration: Duration(milliseconds: time),
               curve: Curves.easeOut,
@@ -60,17 +65,22 @@ class AnimatedTransform extends ImplicitlyAnimatedWidget {
   AnimatedTransformState createState() => AnimatedTransformState();
 }
 
-class AnimatedTransformState extends AnimatedWidgetBaseState<AnimatedTransform> {
+class AnimatedTransformState
+    extends AnimatedWidgetBaseState<AnimatedTransform> {
   AlignmentGeometryTween? _alignment;
   Matrix4Tween? _transform;
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
     _alignment = visitor(
-            _alignment, widget.alignment, (dynamic value) => AlignmentGeometryTween(begin: value as AlignmentGeometry))
+            _alignment,
+            widget.alignment,
+            (dynamic value) =>
+                AlignmentGeometryTween(begin: value as AlignmentGeometry))
         as AlignmentGeometryTween;
-    _transform =
-        visitor(_transform, widget.transform, (dynamic value) => Matrix4Tween(begin: value as Matrix4)) as Matrix4Tween;
+    _transform = visitor(_transform, widget.transform,
+            (dynamic value) => Matrix4Tween(begin: value as Matrix4))
+        as Matrix4Tween;
   }
 
   @override
@@ -87,8 +97,10 @@ class AnimatedTransformState extends AnimatedWidgetBaseState<AnimatedTransform> 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder description) {
     super.debugFillProperties(description);
+    description.add(DiagnosticsProperty<AlignmentGeometryTween>(
+        'alignment', _alignment,
+        showName: false, defaultValue: null));
     description
-        .add(DiagnosticsProperty<AlignmentGeometryTween>('alignment', _alignment, showName: false, defaultValue: null));
-    description.add(ObjectFlagProperty<Matrix4Tween>.has('transform', _transform));
+        .add(ObjectFlagProperty<Matrix4Tween>.has('transform', _transform));
   }
 }

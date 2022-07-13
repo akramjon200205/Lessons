@@ -20,8 +20,28 @@ class _CalculatorPageState extends State<CalculatorPage> {
   double summax = 0;
   String _output = '';
   String operand = '';
+  String expression = "";
+  double topSize = 28;
+  double buttomSize = 40;
 
-  buttonString(String textButton) async {
+  sizeChecker() {
+    if (_controller.text.length > 10 && _controller.text.length % 10 == 0) {
+      if (topSize >= 20) {
+        topSize -= 5;
+      } else {}
+
+      setState(() {});
+    } else if (_resultController.text.length > 10 &&
+        _resultController.text.length % 5 == 0) {
+      if (buttomSize >= 30) {
+        buttomSize -= 5;
+      } else {}
+
+      setState(() {});
+    }
+  }
+
+  buttonString(String textButton) {
     if (textButton == "C") {
       _output = '';
       _resultController.text = '';
@@ -47,9 +67,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
         textButton == "%") {
       summa = double.parse(_controller.text);
       operand = textButton;
-      // if (operand == '+') {
-      //   _output = (double.parse(_output) + summa).toString();
-      // }
+
       _resultController.text = '';
       _resultController.text = "=$_output";
       _output = '';
@@ -96,9 +114,103 @@ class _CalculatorPageState extends State<CalculatorPage> {
     });
   }
 
-  // String equation = "0";
-  // String result = "0";
-  // String expression = "";
+  buttinCalculator(String buttonText) {
+    if (buttonText == "C") {
+      _controller.text = "0";
+      _resultController.text = "0";
+      topSize = 28;
+      buttomSize = 40;
+    } else if (buttonText == "X") {
+      _controller.text =
+          _controller.text.substring(0, _controller.text.length - 1);
+
+      expression = _controller.text;
+      expression = expression.replaceAll("x", '*');
+      try {
+        Parser p = Parser();
+        Expression exp = p.parse(expression);
+        ContextModel cm = ContextModel();
+        _resultController.text = "${exp.evaluate(EvaluationType.REAL, cm)}";
+      } catch (e) {
+        _resultController.text = " ";
+      }
+
+      if (_controller.text == "") {
+        _controller.text = "0";
+      }
+    } else if (buttonText == "=") {
+      expression = _controller.text;
+      expression = expression.replaceAll("x", '*');
+      try {
+        Parser p = Parser();
+        Expression exp = p.parse(expression);
+        ContextModel cm = ContextModel();
+        _resultController.text = "${exp.evaluate(EvaluationType.REAL, cm)}";
+        _controller.text = _resultController.text;
+      } catch (e) {
+        _resultController.text = "Error";
+      }
+    } else if (buttonText == "+/-") {
+      if (_controller.text.length > 1) {
+        expression = _controller.text;
+        Parser p = Parser();
+        Expression exp = p.parse(expression);
+        ContextModel cm = ContextModel();
+        _resultController.text =
+            "${exp.evaluate(EvaluationType.REAL, cm) * (-1)}";
+        _controller.text = _resultController.text;
+      }
+    } else if (buttonText == "%") {
+      expression = _controller.text;
+      Parser p = Parser();
+      Expression exp = p.parse(expression);
+      ContextModel cm = ContextModel();
+      _resultController.text = "${exp.evaluate(EvaluationType.REAL, cm) / 100}";
+      _controller.text = _resultController.text;
+    } else if (buttonText == "+" ||
+        buttonText == "-" ||
+        buttonText == "x" ||
+        buttonText == "/") {
+      if (_controller.text[_controller.text.length - 1] == "+" ||
+          _controller.text[_controller.text.length - 1] == "-" ||
+          _controller.text[_controller.text.length - 1] == "x" ||
+          _controller.text[_controller.text.length - 1] == "/") {
+        _controller.text =
+            _controller.text.substring(0, _controller.text.length - 1);
+        _controller.text += buttonText;
+      } else {
+        if (_controller.text.length > 2 &&
+            _controller.text[_controller.text.length - 2] == "." &&
+            _controller.text[_controller.text.length - 1] == "0") {
+          _controller.text =
+              _controller.text.substring(0, _controller.text.length - 2);
+        }
+        _controller.text = _controller.text + buttonText;
+      }
+    } else if (buttonText == ".") {
+      if (_controller.text.contains(".")) {
+      } else {
+        _controller.text += buttonText;
+      }
+    } else {
+      if (_controller.text == "0") {
+        _controller.text = buttonText;
+      } else {
+        _controller.text = _controller.text + buttonText;
+        expression = _controller.text;
+        expression = expression.replaceAll("x", '*');
+        try {
+          Parser p = Parser();
+          Expression exp = p.parse(expression);
+          ContextModel cm = ContextModel();
+          _resultController.text = "${exp.evaluate(EvaluationType.REAL, cm)}";
+        } catch (e) {
+          _resultController.text = " ";
+        }
+      }
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,12 +292,14 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
+                  children: <Widget>[
                     TextField(
+                      onTap: sizeChecker(),
+                      maxLines: 1,
                       style: kTextStyle(
                           color:
                               _isNightDay == true ? Colors.white : Colors.grey,
-                          size: 28,
+                          size: topSize,
                           fontWeight: FontWeight.w400),
                       textAlign: TextAlign.end,
                       readOnly: true,
@@ -202,10 +316,12 @@ class _CalculatorPageState extends State<CalculatorPage> {
                       padding: EdgeInsets.only(top: 14),
                     ),
                     TextField(
+                      onTap: sizeChecker(),
+                      maxLines: 1,
                       style: kTextStyle(
                           color:
                               _isNightDay == true ? Colors.white : Colors.black,
-                          size: 40,
+                          size: buttomSize,
                           fontWeight: FontWeight.w700),
                       textAlign: TextAlign.end,
                       readOnly: true,
@@ -237,18 +353,18 @@ class _CalculatorPageState extends State<CalculatorPage> {
               children: [
                 _itemButton(
                   "C",
-                  _isNightDay == true ? const Color(0xff2E2F38) : Colors.white,
-                  _isNightDay == true ? Colors.white : Colors.black,
+                  const Color(0xff4E505F),
+                  Colors.white,
                 ),
                 _itemButton(
                   "+/-",
-                  _isNightDay == true ? const Color(0xff2E2F38) : Colors.white,
-                  _isNightDay == true ? Colors.white : Colors.black,
+                  const Color(0xff4E505F),
+                  Colors.white,
                 ),
                 _itemButton(
                   "%",
-                  _isNightDay == true ? const Color(0xff2E2F38) : Colors.white,
-                  _isNightDay == true ? Colors.white : Colors.black,
+                  const Color(0xff4E505F),
+                  Colors.white,
                 ),
                 _itemButton(
                   "/",
@@ -343,44 +459,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
     );
   }
 
-  // Widget _itemButtonPadding(
-  //   String text1,
-  //   String text2,
-  //   String text3,
-  //   String text4,
-  //   Color color,
-  // ) {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //     children: [
-  //       _itemButton(
-  //         text1,
-  //         color,
-  //         _isNightDay == true ? Colors.white : Colors.black,
-  //       ),
-  //       _itemButton(
-  //         text2,
-  //         color,
-  //         _isNightDay == true ? Colors.white : Colors.black,
-  //       ),
-  //       _itemButton(
-  //         text3,
-  //         color,
-  //         _isNightDay == true ? Colors.white : Colors.black,
-  //       ),
-  //       _itemButton(
-  //         text4,
-  //         const Color(0xff4B5EFC),
-  //         Colors.white,
-  //       ),
-  //     ],
-  //   );
-  // }
-
   Widget _itemButton(String text, Color color, Color textColor) {
     return scaleWidget(
       onTap: () {
-        buttonString(text);
+        buttinCalculator(text);
       },
       scale: 0.7,
       child: Container(
@@ -398,35 +480,4 @@ class _CalculatorPageState extends State<CalculatorPage> {
       ),
     );
   }
-  // Widget _itemButton(String buttonText, Color color, Color textColor) {
-  //   return scaleWidget(
-  //     onTap: () {},
-  //     scale: 0.7,
-  //     child: ClipRRect(
-  //       borderRadius: BorderRadius.circular(25),
-  //       child: Container(
-  //         child: Material(
-  //           child: InkWell(
-  //             onTap: () {},
-  //             child: Container(
-  //               alignment: Alignment.center,
-  //               width: 71.75,
-  //               height: 72,
-  //               child: Text(
-  //                 buttonText,
-  //                 style: TextStyle(
-  //                   color: textColor,
-  //                   fontSize: 32,
-  //                   fontWeight: FontWeight.w400,
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //           color: Colors.transparent,
-  //         ),
-  //         color: color,
-  //       ),
-  //     ),
-  //   );
-  // }
 }
