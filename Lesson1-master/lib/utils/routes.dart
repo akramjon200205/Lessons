@@ -25,7 +25,7 @@ class Routes {
   static const weatherPage = '/weatherPage';
   static const simpleAnimPage = '/simpleAnimPage';
   static const examplePage = '/examplePage';
-  static const shufflePage = '/shufflePage';
+  static const shufflePage = '/shufflePage';  
 
   static Route<dynamic> generateRoute(RouteSettings routeSettings) {
     try {

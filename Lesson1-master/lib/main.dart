@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:lesson1/best_calculator/best_currency_model.dart';
+import 'package:lesson1/best_calculator/page.dart';
+import 'package:lesson1/currency/compare_page.dart';
 import 'package:lesson1/currency/currency_model.dart';
 
 import 'package:lesson1/weather/weather_model.dart';
@@ -10,9 +13,9 @@ import 'calculator/calculator_page.dart';
 
 void main() async {
   await Hive.initFlutter();
-  Hive.registerAdapter<CurrencyModel>(CurrencyModelAdapter());
-  Hive.registerAdapter<WeatherModel>(WeatherModelAdapter());
-  Hive.registerAdapter<WeeklyModel>(WeeklyModelAdapter());
+  Hive.registerAdapter<BestCurrencyModel>(BestCurrencyModelAdapter());
+  // Hive.registerAdapter<WeatherModel>(WeatherModelAdapter());
+  // Hive.registerAdapter<WeeklyModel>(WeeklyModelAdapter());
   runApp(const LessonApp());
 }
 
@@ -28,7 +31,7 @@ class LessonApp extends StatelessWidget {
       ),
       // onGenerateRoute: (settings) => Routes.generateRoute(settings),
 
-      home: const CalculatorPage(),
+      home: const MyStatefulWidget(),
     );
   }
 }

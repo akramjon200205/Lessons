@@ -9,11 +9,14 @@ const String currencyListKey = 'currency_list_key';
 const String dateBox = 'date_box';
 const String dateKey = 'date_key';
 
-const scaffoldWeatherGradient = LinearGradient(colors: [Color(0xffFEF7FF), Color(0xffFCEBFF)]);
-const textWeatherGradient =
-    LinearGradient(colors: [Color(0xffFFFFFF), Color(0xffD2C4FF)], transform: GradientRotation(45));
-const containerWeatherGradient =
-    LinearGradient(colors: [Color(0xffE662E5), Color(0xff5364F0)], transform: GradientRotation(45));
+const scaffoldWeatherGradient =
+    LinearGradient(colors: [Color(0xffFEF7FF), Color(0xffFCEBFF)]);
+const textWeatherGradient = LinearGradient(
+    colors: [Color(0xffFFFFFF), Color(0xffD2C4FF)],
+    transform: GradientRotation(45));
+const containerWeatherGradient = LinearGradient(
+    colors: [Color(0xffE662E5), Color(0xff5364F0)],
+    transform: GradientRotation(45));
 
 TextStyle kTextStyle({
   Color? color,
@@ -46,7 +49,9 @@ ButtonStyle buttonStyle({
       padding: MaterialStateProperty.all(padding),
       minimumSize: MaterialStateProperty.all(size),
       shape: MaterialStateProperty.all(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius ?? 0), side: side ?? BorderSide.none),
+        RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius ?? 0),
+            side: side ?? BorderSide.none),
       ));
 }
 
@@ -61,3 +66,10 @@ Map<String, String> wtypes = {
   "bulutli": "ic_mist",
   "yomg'ir": "ic_rain",
 };
+
+const Color color = Color(0xffBBBBBB);
+const Color color1 = Color(0xffFF0000);
+
+const bestCalculateGradient = LinearGradient(
+    colors: [Color(0xffEC5C22), Color(0xffF0781A)],
+    transform: GradientRotation(20));
