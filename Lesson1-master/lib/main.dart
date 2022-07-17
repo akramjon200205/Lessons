@@ -9,6 +9,7 @@ import 'package:lesson1/currency/currency_model.dart';
 import 'package:lesson1/weather/weather_model.dart';
 import 'package:lesson1/weather/weekly_model.dart';
 
+import 'best_calculator/animation_page.dart';
 import 'calculator/calculator_page.dart';
 
 void main() async {

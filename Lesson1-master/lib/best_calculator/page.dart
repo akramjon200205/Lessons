@@ -15,6 +15,7 @@ import 'package:lesson1/utils/routes.dart';
 import 'package:lesson1/widgets/scale_widget.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:wave_transition/wave_transition.dart';
 
 class MyStatefulWidget extends StatefulWidget {
   const MyStatefulWidget({Key? key}) : super(key: key);
@@ -402,353 +403,381 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 12, top: 10),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 150),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          colorizeAnimation(),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              width: 45,
-                              height: 45,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: const Color(0xff262626),
-                                border: Border.all(
-                                    color: const Color(0xffBBBBBB), width: 2),
-                              ),
-                              child: const Icon(
-                                Icons.restore_rounded,
-                                size: 33,
-                                color: Color(0xffBBBBBB),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10, bottom: size.height * 0.04),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 16, left: 16),
-                  child: TextField(
-                    controller: _bestController,
-                    maxLines: 1,
-                    style: kTextStyle(fontWeight: FontWeight.w400),
-                    textAlign: TextAlign.end,
-                    readOnly: true,
-                    decoration: const InputDecoration(
-                      hintText: '',
-                      hintStyle: TextStyle(
-                          fontSize: 28,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w400),
-                    ),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 14),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 16, left: 16),
-                  child: TextField(
-                    maxLines: 1,
-                    controller: _bestResultController,
-                    style: kTextStyle(fontWeight: FontWeight.w700),
-                    textAlign: TextAlign.end,
-                    readOnly: true,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      hintText: '',
-                      hintStyle:
-                          TextStyle(fontSize: 40, fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-                GridView.count(
-                  padding: const EdgeInsets.only(top: 4),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  crossAxisSpacing: 1,
-                  mainAxisSpacing: 1.04,
-                  childAspectRatio: size.height * 0.0024,
-                  crossAxisCount: 4,
-                  primary: false,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    _itemContanier(
-                      "x^n",
-                      const Color(0xffFF0000),
-                    ),
-                    _itemContanier(
-                      "%",
-                      const Color(0xffFF0000),
-                    ),
-                    _itemContanier(
-                      "/",
-                      const Color(0xffFF0000),
-                    ),
+                    colorizeAnimation(),
                     GestureDetector(
-                      onLongPress: () {
-                        setState(() {
-                          _bestController.text = "";
-                          _bestResultController.text = "";
-                        });
-                      },
-                      child: _itemContanier(
-                        "⌫",
-                        const Color(0xffFF0000),
+                      onTap: () {},
+                      child: Container(
+                        width: 45,
+                        height: 45,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color(0xff262626),
+                          border: Border.all(
+                              color: const Color(0xffBBBBBB), width: 2),
+                        ),
+                        child: const Icon(
+                          Icons.restore_rounded,
+                          size: 33,
+                          color: Color(0xffBBBBBB),
+                        ),
                       ),
-                    ),
-                    _itemContanier(
-                      "7",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemContanier(
-                      "8",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemContanier(
-                      "9",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemContanier(
-                      "x",
-                      const Color(0xffFF0000),
-                    ),
-                    _itemContanier(
-                      "4",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemContanier(
-                      "5",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemContanier(
-                      "6",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemContanier(
-                      "-",
-                      const Color(0xffFF0000),
-                    ),
-                    _itemContanier(
-                      "1",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemContanier(
-                      "2",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemContanier(
-                      "3",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemContanier(
-                      "+",
-                      const Color(0xffFF0000),
-                    ),
-                    _itemContanier(
-                      ".",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemContanier(
-                      "0",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemContanier(
-                        "()",
-                        const Color(
-                          0xffBBBBBB,
-                        )),
-                    _itemContanier(
-                      "=",
-                      const Color(0xffFF0000),
                     ),
                   ],
                 ),
-                InkWell(
-                  onTap: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Container(
-                          height: size.height * 0.52,
-                          color: const Color(0xff262626),
-                          child: GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: _itemButtomSheetAnim(size),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: 407,
-                    height: 31,
-                    decoration: const BoxDecoration(
-                      color: color1,
-                    ),
-                    child: Image.asset("assets/parenthesis.png"),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 10, bottom: size.height * 0.04),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 16, left: 16),
+                child: TextField(
+                  controller: _bestController,
+                  maxLines: 1,
+                  style: kTextStyle(fontWeight: FontWeight.w400),
+                  textAlign: TextAlign.end,
+                  readOnly: true,
+                  decoration: const InputDecoration(
+                    hintText: '',
+                    hintStyle: TextStyle(
+                        fontSize: 28,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w400),
                   ),
                 ),
-              ],
-            ),
-          ),
-          SafeArea(
-            child: Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color(0xff434343),
               ),
-              child: Column(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 29),
+              const Padding(
+                padding: EdgeInsets.only(top: 14),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 16, left: 16),
+                child: TextField(
+                  maxLines: 1,
+                  controller: _bestResultController,
+                  style: kTextStyle(fontWeight: FontWeight.w700),
+                  textAlign: TextAlign.end,
+                  readOnly: true,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    hintText: '',
+                    hintStyle:
+                        TextStyle(fontSize: 40, fontWeight: FontWeight.w700),
                   ),
-                  FutureBuilder(
-                    future: _listCurrency.isEmpty ? _loadData() : null,
-                    builder:
-                        (BuildContext context, AsyncSnapshot<bool?> snapshot) {
-                      if (snapshot.hasData) {
-                        return Container(
-                          width: 385,
-                          height: 200,
-                          decoration: const BoxDecoration(
-                            color: Color(0xff262626),
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 7,
-                                offset: Offset(0, 3),
+                ),
+              ),
+              GridView.count(
+                padding: const EdgeInsets.only(top: 4),
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                crossAxisSpacing: 1,
+                mainAxisSpacing: 1.04,
+                childAspectRatio: size.height * 0.0024,
+                crossAxisCount: 4,
+                primary: false,
+                children: [
+                  _itemContanier(
+                    "x^n",
+                    const Color(0xffFF0000),
+                  ),
+                  _itemContanier(
+                    "%",
+                    const Color(0xffFF0000),
+                  ),
+                  _itemContanier(
+                    "/",
+                    const Color(0xffFF0000),
+                  ),
+                  GestureDetector(
+                    onLongPress: () {
+                      setState(() {
+                        _bestController.text = "";
+                        _bestResultController.text = "";
+                      });
+                    },
+                    child: _itemContanier(
+                      "⌫",
+                      const Color(0xffFF0000),
+                    ),
+                  ),
+                  _itemContanier(
+                    "7",
+                    const Color(0xffBBBBBB),
+                  ),
+                  _itemContanier(
+                    "8",
+                    const Color(0xffBBBBBB),
+                  ),
+                  _itemContanier(
+                    "9",
+                    const Color(0xffBBBBBB),
+                  ),
+                  _itemContanier(
+                    "x",
+                    const Color(0xffFF0000),
+                  ),
+                  _itemContanier(
+                    "4",
+                    const Color(0xffBBBBBB),
+                  ),
+                  _itemContanier(
+                    "5",
+                    const Color(0xffBBBBBB),
+                  ),
+                  _itemContanier(
+                    "6",
+                    const Color(0xffBBBBBB),
+                  ),
+                  _itemContanier(
+                    "-",
+                    const Color(0xffFF0000),
+                  ),
+                  _itemContanier(
+                    "1",
+                    const Color(0xffBBBBBB),
+                  ),
+                  _itemContanier(
+                    "2",
+                    const Color(0xffBBBBBB),
+                  ),
+                  _itemContanier(
+                    "3",
+                    const Color(0xffBBBBBB),
+                  ),
+                  _itemContanier(
+                    "+",
+                    const Color(0xffFF0000),
+                  ),
+                  _itemContanier(
+                    ".",
+                    const Color(0xffBBBBBB),
+                  ),
+                  _itemContanier(
+                    "0",
+                    const Color(0xffBBBBBB),
+                  ),
+                  _itemContanier(
+                      "()",
+                      const Color(
+                        0xffBBBBBB,
+                      )),
+                  _itemContanier(
+                    "=",
+                    const Color(0xffFF0000),
+                  ),
+                ],
+              ),
+              InkWell(
+                onTap: () {
+                  showModalBottomSheet<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                        height: size.height * 0.52,
+                        color: const Color(0xff262626),
+                        child: GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: _itemButtomSheetAnim(size),
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  height: 31,
+                  decoration: const BoxDecoration(
+                    color: color1,
+                  ),
+                  child: Image.asset("assets/parenthesis.png"),
+                ),
+              ),
+            ],
+          ),
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: const BoxDecoration(
+              color: Color(0xff434343),
+            ),
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 29),
+                ),
+                FutureBuilder(
+                  future: _listCurrency.isEmpty ? _loadData() : null,
+                  builder:
+                      (BuildContext context, AsyncSnapshot<bool?> snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+                        width: 385,
+                        height: 200,
+                        decoration: const BoxDecoration(
+                          color: Color(0xff262626),
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 7,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 13, right: 7),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 7),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "From currency",
+                                        style: kTextStyle(
+                                            size: 16,
+                                            color: const Color(0xff00E0FF),
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      Icon(
+                                        Icons.refresh,
+                                        size: 40,
+                                        color: Colors.grey[300],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              _itemCurrency(
+                                const Color(0xff00E0FF),
+                                topCur,
+                                _editingControllerTop,
+                                _topFocus,
+                              ),
+                              const SizedBox(
+                                height: 7,
+                              ),
+                              Text(
+                                "In currency",
+                                style: kTextStyle(
+                                    size: 16,
+                                    color: const Color(0xffFF4D00),
+                                    fontWeight: FontWeight.w400),
+                              ),
+                              const SizedBox(
+                                height: 7,
+                              ),
+                              _itemCurrency(
+                                const Color(0xffFF4D00),
+                                bottomCur,
+                                _editingControllerBottom,
+                                _bottomFocus,
                               ),
                             ],
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 13, right: 7),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 7),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "From currency",
-                                          style: kTextStyle(
-                                              size: 16,
-                                              color: const Color(0xff00E0FF),
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        Icon(
-                                          Icons.refresh,
-                                          size: 40,
-                                          color: Colors.grey[300],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                _itemCurrency(
-                                  const Color(0xff00E0FF),
-                                  topCur,
-                                  _editingControllerTop,
-                                  _topFocus,
-                                ),
-                                const SizedBox(
-                                  height: 7,
-                                ),
-                                Text(
-                                  "In currency",
-                                  style: kTextStyle(
-                                      size: 16,
-                                      color: const Color(0xffFF4D00),
-                                      fontWeight: FontWeight.w400),
-                                ),
-                                const SizedBox(
-                                  height: 7,
-                                ),
-                                _itemCurrency(
-                                  const Color(0xffFF4D00),
-                                  bottomCur,
-                                  _editingControllerBottom,
-                                  _bottomFocus,
-                                ),
-                              ],
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Expanded(
+                        child: Center(
+                          child: Text(
+                            'Error',
+                            style: kTextStyle(size: 18),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return const Expanded(
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+                const SizedBox(
+                  height: 42,
+                ),
+                GridView.count(
+                  padding: const EdgeInsets.only(top: 15, left: 20, right: 20),
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 1,
+                  mainAxisSpacing: 1,
+                  primary: false,
+                  childAspectRatio: size.height * 0.0024,
+                  children: [
+                    _itemButtonCurrency(
+                      "7",
+                      const Color(0xffBBBBBB),
+                    ),
+                    _itemButtonCurrency(
+                      "8",
+                      const Color(0xffBBBBBB),
+                    ),
+                    _itemButtonCurrency(
+                      "9",
+                      const Color(0xffBBBBBB),
+                    ),
+                    scaleWidget(
+                      onTap: () {},
+                      scale: 0.8,
+                      child: Container(
+                        width: 94.89,
+                        height: 81,
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          color: Color(0xff161616),
+                          border: Border(
+                            top: BorderSide(
+                              color: Color(0xff54617F),
+                              width: 1,
+                            ),
+                            right: BorderSide(
+                              color: Color(0xff54617F),
+                              width: 1,
                             ),
                           ),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Expanded(
-                          child: Center(
-                            child: Text(
-                              'Error',
-                              style: kTextStyle(size: 18),
-                            ),
-                          ),
-                        );
-                      } 
-                      else {
-                        return const Expanded(
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  const SizedBox(
-                    height: 42,
-                  ),
-                  GridView.count(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 20),
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    crossAxisCount: 4,
-                    crossAxisSpacing: 1,
-                    mainAxisSpacing: 1,
-                    primary: false,
-                    childAspectRatio: size.height * 0.0024,
-                    children: [
-                      _itemButtonCurrency(
-                        "7",
-                        const Color(0xffBBBBBB),
+                        ),
+                        child: const Icon(
+                          Icons.backspace_outlined,
+                          size: 25,
+                          color: Color(0xffFF0000),
+                        ),
                       ),
-                      _itemButtonCurrency(
-                        "8",
-                        const Color(0xffBBBBBB),
-                      ),
-                      _itemButtonCurrency(
-                        "9",
-                        const Color(0xffBBBBBB),
-                      ),
-                      scaleWidget(
-                        onTap: () {},
-                        scale: 0.8,
-                        child: Container(
+                    ),
+                    _itemButtonCurrency(
+                      "4",
+                      const Color(0xffBBBBBB),
+                    ),
+                    _itemButtonCurrency(
+                      "5",
+                      const Color(0xffBBBBBB),
+                    ),
+                    _itemButtonCurrency(
+                      "6",
+                      const Color(0xffBBBBBB),
+                    ),
+                    scaleWidget(
+                      onTap: () {},
+                      scale: 0.8,
+                      child: Container(
                           width: 94.89,
                           height: 81,
                           alignment: Alignment.center,
@@ -765,110 +794,82 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
                               ),
                             ),
                           ),
-                          child: const Icon(
-                            Icons.backspace_outlined,
-                            size: 25,
-                            color: Color(0xffFF0000),
-                          ),
-                        ),
-                      ),
-                      _itemButtonCurrency(
-                        "4",
-                        const Color(0xffBBBBBB),
-                      ),
-                      _itemButtonCurrency(
-                        "5",
-                        const Color(0xffBBBBBB),
-                      ),
-                      _itemButtonCurrency(
-                        "6",
-                        const Color(0xffBBBBBB),
-                      ),
-                      scaleWidget(
+                          child: Image.asset(
+                            "assets/down_top.png",
+                            width: 25.19,
+                            height: 49.84,
+                          )),
+                    ),
+                    _itemButtonCurrency(
+                      "1",
+                      const Color(0xffBBBBBB),
+                    ),
+                    _itemButtonCurrency(
+                      "2",
+                      const Color(0xffBBBBBB),
+                    ),
+                    _itemButtonCurrency(
+                      "3",
+                      const Color(0xffBBBBBB),
+                    ),
+                    _itemButtonCurrency(
+                      "C",
+                      const Color(0xffFF0000),
+                    ),
+                  ],
+                ),
+                GridView.count(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 1,
+                  mainAxisSpacing: 1,
+                  primary: false,
+                  childAspectRatio: size.height * 0.004,
+                  children: [
+                    _itemButtonCurrency(
+                      ",",
+                      const Color(0xffBBBBBB),
+                    ),
+                    _itemButtonCurrency(
+                      "0",
+                      const Color(0xffBBBBBB),
+                    ),
+                    Expanded(
+                      child: scaleWidget(
                         onTap: () {},
                         scale: 0.8,
                         child: Container(
-                            width: 94.89,
-                            height: 81,
-                            alignment: Alignment.center,
-                            decoration: const BoxDecoration(
-                              color: Color(0xff161616),
-                              border: Border(
-                                top: BorderSide(
-                                  color: Color(0xff54617F),
-                                  width: 1,
-                                ),
-                                right: BorderSide(
-                                  color: Color(0xff54617F),
-                                  width: 1,
-                                ),
+                          width: 188,
+                          height: 81,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            color: Color(0xff161616),
+                            border: Border(
+                              top: BorderSide(
+                                color: Color(0xff54617F),
+                                width: 1,
+                              ),
+                              right: BorderSide(
+                                color: Color(0xff54617F),
+                                width: 1,
                               ),
                             ),
-                            child: Image.asset(
-                              "assets/down_top.png",
-                              width: 25.19,
-                              height: 49.84,
-                            )),
-                      ),
-                      _itemButtonCurrency(
-                        "1",
-                        const Color(0xffBBBBBB),
-                      ),
-                      _itemButtonCurrency(
-                        "2",
-                        const Color(0xffBBBBBB),
-                      ),
-                      _itemButtonCurrency(
-                        "3",
-                        const Color(0xffBBBBBB),
-                      ),
-                      _itemButtonCurrency(
-                        "C",
-                        const Color(0xffFF0000),
-                      ),
-                      _itemButtonCurrency(
-                        ",",
-                        const Color(0xffBBBBBB),
-                      ),
-                      _itemButtonCurrency(
-                        "0",
-                        const Color(0xffBBBBBB),
-                      ),
-                      Expanded(
-                        child: scaleWidget(
-                          onTap: () {},
-                          scale: 0.8,
-                          child: Container(
-                            width: 188,
-                            height: 81,
-                            alignment: Alignment.center,
-                            decoration: const BoxDecoration(
-                              color: Color(0xff161616),
-                              border: Border(
-                                top: BorderSide(
-                                  color: Color(0xff54617F),
-                                  width: 1,
-                                ),
-                                right: BorderSide(
-                                  color: Color(0xff54617F),
-                                  width: 1,
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              "00",
-                              style: kTextStyle(
-                                  size: 28,
-                                  color: const Color(0xffBBBBBB),
-                                  fontWeight: FontWeight.w400),
-                            ),
+                          ),
+                          child: Text(
+                            "00",
+                            style: kTextStyle(
+                                size: 28,
+                                color: const Color(0xffBBBBBB),
+                                fontWeight: FontWeight.w400),
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
           Scaffold(
@@ -994,39 +995,32 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
                                     ),
                                   ],
                                 ),
-                                // InkWell(
-                                //   onTap: () {
-                                //     showModalBottomSheet<void>(
-                                //       context: context,
-                                //       builder: (BuildContext context) {
-                                //         return Container(
-                                //           height: size.height * 0.52,
-                                //           color: const Color(0xff262626),
-                                //           decoration: const BoxDecoration(
-                                //             color: Color(0xff262626),
-                                //           ),
-                                //         );
-                                //       },
-                                //     );
-                                //   },
-                                //   // child: TextField(
-                                //   //   maxLines: 1,
-                                //   //   style:
-                                //   //       kTextStyle(fontWeight: FontWeight.w700),
-                                //   //   textAlign: TextAlign.end,
-                                //   //   readOnly: true,
-                                //   //   keyboardType: TextInputType.number,
-                                //   //   decoration: const InputDecoration(
-                                //   //     hintText: '1',
-                                //   //     hintStyle: TextStyle(
-                                //   //         fontSize: 38,
-                                //   //         fontWeight: FontWeight.w700, color: Color(0xffFF0000)),
-                                //   //   ),
-                                //   // ),
-                                // child: Container(
-
-                                // ),
-                                // ),
+                                InkWell(
+                                    onTap: () {
+                                      showModalBottomSheet<void>(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return Container(
+                                            width: double.infinity,
+                                            height: size.height * 0.52,
+                                            color: const Color(0xff262626),
+                                            child: GestureDetector(
+                                              onTap: () =>
+                                                  Navigator.pop(context),
+                                              child: _itemButtomSheetAnim(size),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.grey,
+                                      ),
+                                      child: const Text("hello world"),
+                                    )),
                               ],
                             ),
                           ),

@@ -508,6 +508,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  rect_getter:
+    dependency: transitive
+    description:
+      name: rect_getter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
+  ripple_effect:
+    dependency: "direct main"
+    description:
+      name: ripple_effect
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
   shelf:
     dependency: transitive
     description:
@@ -618,6 +632,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  wave_transition:
+    dependency: "direct main"
+    description:
+      name: wave_transition
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.6"
   web_socket_channel:
     dependency: transitive
     description:

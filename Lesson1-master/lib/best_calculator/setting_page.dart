@@ -88,7 +88,7 @@ class _SettingPageState extends State<SettingPage>
                           fontWeight: FontWeight.w400),
                     ),
                     const Padding(
-                      padding: EdgeInsets.only(top: 3),
+                      padding: EdgeInsets.only(top: 5),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -240,37 +240,31 @@ class _SettingPageState extends State<SettingPage>
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 150, vertical: 20),
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 25,
-                              height: 25,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12.5),
-                                color: Colors.black,
-                              ),
-                              child: Text(
-                                "i",
-                                style: kTextStyle(
-                                    size: 18,
-                                    color: Colors.grey[300],
-                                    fontWeight: FontWeight.w400),
-                              ),
-                            ),
-                            Text(
-                              "About",
-                              style: kTextStyle(
-                                  size: 22,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black54),
-                            ),
-                          ],
+                    Center(
+                      child: TextButton.icon(
+                        onPressed: () {},
+                        icon: Container(
+                          width: 25,
+                          height: 25,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.5),
+                            color: Colors.black,
+                          ),
+                          child: Text(
+                            "i",
+                            style: kTextStyle(
+                                size: 18,
+                                color: Colors.grey[300],
+                                fontWeight: FontWeight.w400),
+                          ),
+                        ),
+                        label: Text(
+                          "About",
+                          style: kTextStyle(
+                              size: 22,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black54),
                         ),
                       ),
                     ),
