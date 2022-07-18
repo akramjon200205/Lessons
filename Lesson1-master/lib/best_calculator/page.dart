@@ -7,24 +7,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:lesson1/best_calculator/area_pagea.dart';
+import 'package:lesson1/best_calculator/mass_page.dart';
 import 'package:lesson1/best_calculator/best_currency_model.dart';
+
 import 'package:lesson1/best_calculator/setting_page.dart';
+import 'package:lesson1/best_calculator/volume_page.dart';
 import 'package:lesson1/utils/constants.dart';
 import 'package:lesson1/utils/hive_util.dart';
-import 'package:lesson1/utils/routes.dart';
+
 import 'package:lesson1/widgets/scale_widget.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:wave_transition/wave_transition.dart';
 
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({Key? key}) : super(key: key);
+import 'distance.dart';
+
+class BestClaculatePage extends StatefulWidget {
+  const BestClaculatePage({Key? key}) : super(key: key);
 
   @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
+  State<BestClaculatePage> createState() => _BestClaculatePageState();
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget>
+class _BestClaculatePageState extends State<BestClaculatePage>
     with TickerProviderStateMixin, HiveUtil {
   late TabController _tabController;
   late TabController _tabController1;
@@ -303,8 +308,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
         ],
         title: TabBar(
           indicatorColor: const Color(0xff161616),
-          indicatorWeight: 0.1,
-          indicatorSize: TabBarIndicatorSize.tab,
+          // indicatorWeight: 0.1,
+          // indicatorSize: TabBarIndicatorSize.tab,
+
           controller: _tabController,
           tabs: <Widget>[
             Tab(
@@ -411,22 +417,98 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    colorizeAnimation(),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        width: 45,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: const Color(0xff262626),
-                          border: Border.all(
-                              color: const Color(0xffBBBBBB), width: 2),
-                        ),
-                        child: const Icon(
-                          Icons.restore_rounded,
-                          size: 33,
-                          color: Color(0xffBBBBBB),
+                    Container(
+                        alignment: Alignment.center,
+                        width: size.width * 0.68,
+                        child: colorizeAnimation()),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 30),
+                      child: GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet<void>(
+                            isScrollControlled: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Container(
+                                height: size.height * 0.89,
+                                color: const Color(0xff262626),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 17, right: 17),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {},
+                                            child: Text(
+                                              "history",
+                                              style: kTextStyle(
+                                                size: 18,
+                                                fontWeight: FontWeight.w400,
+                                                color: const Color(0xffFF0000),
+                                              ),
+                                            ),
+                                          ),
+                                          const Icon(
+                                            CupertinoIcons.delete_simple,
+                                            size: 35,
+                                            color: Color(0xffFF0000),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      width: double.infinity,
+                                      height: size.height * 0.775,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xff262626),
+                                        border: Border(
+                                          top: BorderSide(
+                                            width: 1,
+                                            color: Color(0xffFF0000),
+                                          ),
+                                          bottom: BorderSide(
+                                            width: 1,
+                                            color: Color(0xffFF0000),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () => Navigator.pop(context),
+                                      child: Container(
+                                        height: 30,
+                                        width: double.infinity,
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xffFF0000),
+                                        ),
+                                        child: Image.asset(
+                                            "assets/parenthesis.png"),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          width: 45,
+                          height: 45,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color(0xff262626),
+                            border: Border.all(
+                                color: const Color(0xffBBBBBB), width: 2),
+                          ),
+                          child: const Icon(
+                            Icons.restore_rounded,
+                            size: 33,
+                            color: Color(0xffBBBBBB),
+                          ),
                         ),
                       ),
                     ),
@@ -483,7 +565,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
                 primary: false,
                 children: [
                   _itemContanier(
-                    "x^n",
+                    "xⁿ",
                     const Color(0xffFF0000),
                   ),
                   _itemContanier(
@@ -582,7 +664,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
                         height: size.height * 0.52,
                         color: const Color(0xff262626),
                         child: GestureDetector(
-                          onTap: () => Navigator.pop(context),
                           child: _itemButtomSheetAnim(size),
                         ),
                       );
@@ -601,6 +682,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
               ),
             ],
           ),
+
+          // Center(
+          //     child: Text(
+          //   "salom",
+          //   style: kTextStyle(size: 38),
+          // )),
+
           Container(
             width: double.infinity,
             height: double.infinity,
@@ -714,7 +802,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
                   height: 42,
                 ),
                 GridView.count(
-                  padding: const EdgeInsets.only(top: 15, left: 20, right: 20),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   crossAxisCount: 4,
@@ -816,18 +905,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
                       "C",
                       const Color(0xffFF0000),
                     ),
-                  ],
-                ),
-                GridView.count(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 1,
-                  mainAxisSpacing: 1,
-                  primary: false,
-                  childAspectRatio: size.height * 0.004,
-                  children: [
                     _itemButtonCurrency(
                       ",",
                       const Color(0xffBBBBBB),
@@ -957,146 +1034,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
             body: TabBarView(
               controller: _tabController1,
               children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          alignment: Alignment.bottomLeft,
-                          width: double.infinity,
-                          height: 170,
-                          decoration: const BoxDecoration(
-                            color: Color(0Xff161616),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 13, right: 17),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "m",
-                                      style: kTextStyle(
-                                          size: 16,
-                                          color: const Color(0xffFF0000),
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                    Text(
-                                      "m",
-                                      style: kTextStyle(
-                                          size: 38,
-                                          color: const Color(0xffFF0000),
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  ],
-                                ),
-                                InkWell(
-                                    onTap: () {
-                                      showModalBottomSheet<void>(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return Container(
-                                            width: double.infinity,
-                                            height: size.height * 0.52,
-                                            color: const Color(0xff262626),
-                                            child: GestureDetector(
-                                              onTap: () =>
-                                                  Navigator.pop(context),
-                                              child: _itemButtomSheetAnim(size),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.grey,
-                                      ),
-                                      child: const Text("hello world"),
-                                    )),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          height: size.height - 307,
-                          decoration: const BoxDecoration(
-                            color: Color(0xff161616),
-                          ),
-                          child: ListView(
-                            children: [
-                              _itemMeasurementsContanier(
-                                  const Color(0xff262626),
-                                  "millimetr",
-                                  "mm",
-                                  "1"),
-                              _itemMeasurementsContanier(
-                                  const Color(0xff161616),
-                                  "cantimetr",
-                                  "cm",
-                                  "1"),
-                              _itemMeasurementsContanier(
-                                  const Color(0xff262626), "metr", "m", "1"),
-                              _itemMeasurementsContanier(
-                                  const Color(0xff161616), "yard", "yd", "1"),
-                              _itemMeasurementsContanier(
-                                  const Color(0xff262626), "foot", "ft", "1"),
-                              _itemMeasurementsContanier(
-                                  const Color(0xff161616),
-                                  "kilometr",
-                                  "km",
-                                  "1"),
-                              _itemMeasurementsContanier(
-                                  const Color(0xff262626), "mile", "mi", "1"),
-                              _itemMeasurementsContanier(
-                                  const Color(0xff161616), "inch", "in", "1"),
-                              _itemMeasurementsContanier(
-                                  const Color(0xff262626),
-                                  "nautical mile",
-                                  "nmi",
-                                  "1"),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Center(
-                  child: Text(
-                    "ABS",
-                    style: kTextStyle(
-                      size: 30,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    "ABS",
-                    style: kTextStyle(
-                      size: 30,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    "ABS",
-                    style: kTextStyle(
-                      size: 30,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                const MyWidgetDistance(),
+                const MyWidgetArea(),
+                const MyWidgetMass(),
+                const MyWidgetVolume(),
                 Center(
                   child: Text(
                     "ABS",
@@ -1132,56 +1073,20 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
     );
   }
 
-  Container _itemMeasurementsContanier(
-      Color colorMeasurements, String text1, String text2, String text3) {
-    return Container(
-      alignment: Alignment.center,
-      width: double.infinity,
-      height: 70,
-      decoration: BoxDecoration(
-        color: colorMeasurements,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 13, right: 18),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _itemMeasurementsText(text1, 12),
-                _itemMeasurementsText(text2, 24),
-              ],
-            ),
-            _itemMeasurementsText(text3, 24),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Text _itemMeasurementsText(String text, double sizes) {
-    return Text(
-      text,
-      style: kTextStyle(
-          size: sizes,
-          color: const Color(0xffDADADA),
-          fontWeight: FontWeight.w400),
-    );
-  }
-
   Column _itemButtomSheetAnim(Size size) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Container(
-          height: 30,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Color(0xffFF0000),
+        InkWell(
+          onTap: () => Navigator.pop(context),
+          child: Container(
+            height: 30,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: Color(0xffFF0000),
+            ),
+            child: Image.asset("assets/parenthesis.png"),
           ),
-          child: Image.asset("assets/parenthesis.png"),
         ),
         GridView.count(
           padding: const EdgeInsets.only(top: 4, bottom: 1),
@@ -1201,17 +1106,17 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
             _itemBottomSheet("sinh"),
             _itemBottomSheet("cosh"),
             _itemBottomSheet("tanh"),
-            _itemBottomSheet("x^-1"),
-            _itemBottomSheet("x^2"),
-            _itemBottomSheet("x^3"),
+            _itemBottomSheet("x⁻¹"),
+            _itemBottomSheet("x²"),
+            _itemBottomSheet("x³"),
             _itemBottomSheet("exp"),
             _itemBottomSheet("log"),
             _itemBottomSheet("ln"),
             _itemBottomSheet("e"),
-            _itemBottomSheet("e^n"),
+            _itemBottomSheet("eⁿ"),
             _itemBottomSheet("|x|"),
             _itemBottomSheet("√"),
-            _itemBottomSheet("3√"),
+            _itemBottomSheet("³√"),
             _itemBottomSheet("n!"),
           ],
         ),

@@ -17,7 +17,7 @@ var controller3 = "";
 
 String controller() {
   var string1 = controller3.toString();
-  return string1 ?? "";
+  return string1;
 }
 
 class _SettingPageState extends State<SettingPage>
@@ -104,7 +104,7 @@ class _SettingPageState extends State<SettingPage>
                             right: 10,
                             bottom: 20,
                           ),
-                          child: InkWell(
+                          child: GestureDetector(
                             onTap: () {
                               setState(() {
                                 controller3 = controller1.text;
