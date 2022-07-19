@@ -20,7 +20,8 @@ class ComparePage extends StatefulWidget {
 
 class _ComparePageState extends State<ComparePage> with HiveUtil {
   final TextEditingController _editingControllerTop = TextEditingController();
-  final TextEditingController _editingControllerBottom = TextEditingController();
+  final TextEditingController _editingControllerBottom =
+      TextEditingController();
   final FocusNode _topFocus = FocusNode();
   final FocusNode _bottomFocus = FocusNode();
   List<CurrencyModel> _listCurrency = [];
@@ -73,7 +74,8 @@ class _ComparePageState extends State<ComparePage> with HiveUtil {
     var isLoad = await loadLocalData();
     if (isLoad) {
       try {
-        var response = await get(Uri.parse('https://cbu.uz/uz/arkhiv-kursov-valyut/json/'));
+        var response = await get(
+            Uri.parse('https://cbu.uz/uz/arkhiv-kursov-valyut/json/'));
         if (response.statusCode == 200) {
           for (final item in jsonDecode(response.body)) {
             var model = CurrencyModel.fromJson(item);
@@ -84,7 +86,8 @@ class _ComparePageState extends State<ComparePage> with HiveUtil {
             }
             _listCurrency.add(model);
             await saveBox<String>(dateBox, topCur?.date ?? '', key: dateKey);
-            await saveBox<List<dynamic>>(currencyBox, _listCurrency, key: currencyListKey);
+            await saveBox<List<dynamic>>(currencyBox, _listCurrency,
+                key: currencyListKey);
           }
           return true;
         } else {
@@ -104,8 +107,12 @@ class _ComparePageState extends State<ComparePage> with HiveUtil {
   Future<bool> loadLocalData() async {
     try {
       var date = await getBox<String>(dateBox, key: dateKey);
-      if (date == DateFormat('dd.MM.yyyy').format(DateTime.now().add(const Duration(days: -1)))) {
-        var list = await getBox<List<dynamic>>(currencyBox, key: currencyListKey) ?? [];
+      if (date ==
+          DateFormat('dd.MM.yyyy')
+              .format(DateTime.now().add(const Duration(days: -1)))) {
+        var list =
+            await getBox<List<dynamic>>(currencyBox, key: currencyListKey) ??
+                [];
         _listCurrency = List.castFrom<dynamic, CurrencyModel>(list);
         for (var model in _listCurrency) {
           if (model.ccy == 'USD') {
@@ -155,7 +162,8 @@ class _ComparePageState extends State<ComparePage> with HiveUtil {
                       children: [
                         TextSpan(
                           text: 'Wellcome Back',
-                          style: kTextStyle(size: 20, fontWeight: FontWeight.bold),
+                          style:
+                              kTextStyle(size: 20, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -181,107 +189,112 @@ class _ComparePageState extends State<ComparePage> with HiveUtil {
                 ],
               ),
               FutureBuilder(
-                  future: _listCurrency.isEmpty ? _loadData() : null,
-                  builder: ((context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(14),
-                        margin: const EdgeInsets.symmetric(vertical: 25),
-                        decoration: BoxDecoration(
-                          color: const Color(0xff2d334d),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Exchange',
-                                  style: kTextStyle(size: 16, fontWeight: FontWeight.w600),
+                future: _listCurrency.isEmpty ? _loadData() : null,
+                builder: ((context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      margin: const EdgeInsets.symmetric(vertical: 25),
+                      decoration: BoxDecoration(
+                        color: const Color(0xff2d334d),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Exchange',
+                                style: kTextStyle(
+                                    size: 16, fontWeight: FontWeight.w600),
+                              ),
+                              IconButton(
+                                onPressed: () {},
+                                iconSize: 20,
+                                icon: const Icon(
+                                  Icons.settings,
+                                  size: 20,
+                                  color: Colors.white,
                                 ),
-                                IconButton(
-                                  onPressed: () {},
-                                  iconSize: 20,
-                                  icon: const Icon(
-                                    Icons.settings,
-                                    size: 20,
+                              )
+                            ],
+                          ),
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Column(
+                                children: [
+                                  _itemExch(
+                                      _editingControllerTop, topCur, _topFocus,
+                                      ((value) {
+                                    if (value is CurrencyModel) {
+                                      setState(() => topCur = value);
+                                    }
+                                  })),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  _itemExch(_editingControllerBottom, bottomCur,
+                                      _bottomFocus, ((value) {
+                                    if (value is CurrencyModel) {
+                                      setState(() => bottomCur = value);
+                                    }
+                                  })),
+                                ],
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    var model = topCur?.copyWith();
+                                    topCur = bottomCur?.copyWith();
+                                    bottomCur = model;
+                                    _editingControllerTop.clear();
+                                    _editingControllerBottom.clear();
+                                  });
+                                },
+                                child: Container(
+                                  height: 35,
+                                  width: 35,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xff2d334d),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.white12),
+                                  ),
+                                  child: const Icon(
+                                    Icons.currency_exchange,
                                     color: Colors.white,
+                                    size: 20,
                                   ),
-                                )
-                              ],
-                            ),
-                            Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Column(
-                                  children: [
-                                    _itemExch(_editingControllerTop, topCur, _topFocus, ((value) {
-                                      if (value is CurrencyModel) {
-                                        setState(() => topCur = value);
-                                      }
-                                    })),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    _itemExch(_editingControllerBottom, bottomCur, _bottomFocus, ((value) {
-                                      if (value is CurrencyModel) {
-                                        setState(() => bottomCur = value);
-                                      }
-                                    })),
-                                  ],
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      var model = topCur?.copyWith();
-                                      topCur = bottomCur?.copyWith();
-                                      bottomCur = model;
-                                      _editingControllerTop.clear();
-                                      _editingControllerBottom.clear();
-                                    });
-                                  },
-                                  child: Container(
-                                    height: 35,
-                                    width: 35,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xff2d334d),
-                                      shape: BoxShape.circle,
-                                      border: Border.all(color: Colors.white12),
-                                    ),
-                                    child: const Icon(
-                                      Icons.currency_exchange,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Expanded(
+                      child: Center(
+                        child: Text(
+                          'Error',
+                          style: kTextStyle(size: 18),
                         ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Expanded(
-                        child: Center(
-                          child: Text(
-                            'Error',
-                            style: kTextStyle(size: 18),
-                          ),
+                      ),
+                    );
+                  } else {
+                    return const Expanded(
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
                         ),
-                      );
-                    } else {
-                      return const Expanded(
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                          ),
-                        ),
-                      );
-                    }
-                  }))
+                      ),
+                    );
+                  }
+                }),
+              ),
             ],
           ),
         ),
@@ -289,11 +302,14 @@ class _ComparePageState extends State<ComparePage> with HiveUtil {
     );
   }
 
-  Widget _itemExch(TextEditingController controller, CurrencyModel? model, FocusNode focusNode, Function callback) {
+  Widget _itemExch(TextEditingController controller, CurrencyModel? model,
+      FocusNode focusNode, Function callback) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(border: Border.all(color: Colors.white12), borderRadius: BorderRadius.circular(15)),
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.white12),
+          borderRadius: BorderRadius.circular(15)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -310,19 +326,23 @@ class _ComparePageState extends State<ComparePage> with HiveUtil {
                     border: InputBorder.none,
                     isDense: true,
                     hintText: '0.00',
-                    hintStyle: kTextStyle(size: 24, fontWeight: FontWeight.bold),
+                    hintStyle:
+                        kTextStyle(size: 24, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
               GestureDetector(
-                onTap: () => Navigator.pushNamed(context, Routes.currencyPage, arguments: {
-                  'list_curreny': _listCurrency,
-                  'top_cur': topCur?.ccy,
-                  'bottom_cur': bottomCur?.ccy
-                }).then(((value) => callback(value))),
+                onTap: () => Navigator.pushNamed(context, Routes.currencyPage,
+                    arguments: {
+                      'list_curreny': _listCurrency,
+                      'top_cur': topCur?.ccy,
+                      'bottom_cur': bottomCur?.ccy
+                    }).then(((value) => callback(value))),
                 child: Container(
                   padding: const EdgeInsets.all(7),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: const Color(0xff10a4d4)),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: const Color(0xff10a4d4)),
                   child: Row(children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
@@ -336,7 +356,8 @@ class _ComparePageState extends State<ComparePage> with HiveUtil {
                       padding: const EdgeInsets.only(left: 5, right: 10),
                       child: Text(
                         model?.ccy ?? 'UNK',
-                        style: kTextStyle(size: 16, fontWeight: FontWeight.w600),
+                        style:
+                            kTextStyle(size: 16, fontWeight: FontWeight.w600),
                       ),
                     ),
                     const Icon(
@@ -350,8 +371,11 @@ class _ComparePageState extends State<ComparePage> with HiveUtil {
             ],
           ),
           Text(
-            controller.text.isNotEmpty ? (double.parse(controller.text) * 0.05).toStringAsFixed(2) : '0.00',
-            style: kTextStyle(fontWeight: FontWeight.w600, color: Colors.white54),
+            controller.text.isNotEmpty
+                ? (double.parse(controller.text) * 0.05).toStringAsFixed(2)
+                : '0.00',
+            style:
+                kTextStyle(fontWeight: FontWeight.w600, color: Colors.white54),
           )
         ],
       ),

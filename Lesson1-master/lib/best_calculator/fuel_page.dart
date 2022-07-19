@@ -1,46 +1,36 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lesson1/best_calculator/change_theme.dart';
 import 'package:lesson1/utils/constants.dart';
 import 'package:lesson1/widgets/scale_widget.dart';
 
-class MyWidgetMass extends StatefulWidget {
-  const MyWidgetMass({Key? key}) : super(key: key);
+class MyWidgetFuel extends StatefulWidget {
+  const MyWidgetFuel({Key? key}) : super(key: key);
 
   @override
-  State<MyWidgetMass> createState() => _MyWidgetMassState();
+  State<MyWidgetFuel> createState() => _MyWidgetFuelState();
 }
 
-class _MyWidgetMassState extends State<MyWidgetMass>
+class _MyWidgetFuelState extends State<MyWidgetFuel>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
-  Map listMapMassMass = {
-    "mg": "milligram",
-    "g": "gram",
-    "kg": "kilogram",
-    "t": "ton",
-    "ton(UK)": 'long ton',
-    'ton(US)': 'short ton',
-    'lb': 'pound',
-    'ounce': 'ounce',
-    'st': 'stone',
-    'ct': 'carat',
+  Map listMapArea = {
+    "L/100km": "liters/100 kilometer",
+    "gal(UK)/100 miles": "gallons(UK)/100 miles",
+    "gal(US)/100 miles": "gallons(US)/100 miles",
+    "km/L": "kilometer/liter",
+    "MPG(UK)": "(UK)miles per gallon",
+    "MPG(US)": "(US)miles per gallon",
   };
 
   Map listMass = {
-    "mg": 0.000001,
-    "g": 0.001,
-    "kg": 1,
-    "t": 10000,
-    "ton(UK)": 0.0929,
-    'ton(US)': 2589988.11,
-    'lb': 1000000,
-    'ounce': 6.452 * pow(10, -4),
-    'st': 4046.856,
-    'ct': 5000,
+    "L/100km": 100,
+    "gal(UK)/100 miles": 282.485875706,
+    "gal(US)/100 miles": 235.294117647,
+    "km/L": 1,
+    "MPG(UK)": 0.35400619,
+    "MPG(US)": 0.425143708,
   };
 
   List<Color> lisColor = [
@@ -51,11 +41,8 @@ class _MyWidgetMassState extends State<MyWidgetMass>
   final controllerDistance = TextEditingController();
   final _textTop = TextEditingController();
   final _textButtom = TextEditingController();
-  var _textTrailing = TextEditingController();
   final _measurements = TextEditingController();
-  final _textEdit = TextEditingController();
   double sizeText = 38;
-  int a = 1;
 
   late Widget onclick;
   bool oncliked = true;
@@ -151,15 +138,15 @@ class _MyWidgetMassState extends State<MyWidgetMass>
                                 return Container(
                                   color: const Color(0xff262626),
                                   child: ListView.builder(
-                                    itemCount: listMapMassMass.length,
+                                    itemCount: listMapArea.length,
                                     itemBuilder: (context, index) {
                                       return _itemGestureChecked(
                                         context,
-                                        "${listMapMassMass.values.elementAt(index)}",
-                                        "${listMapMassMass.keys.elementAt(index)}",
+                                        "${listMapArea.values.elementAt(index)}",
+                                        "${listMapArea.keys.elementAt(index)}",
                                         lisColor[index % 2],
                                         icon: _textTop.text ==
-                                                "${listMapMassMass.values.elementAt(index)}"
+                                                "${listMapArea.values.elementAt(index)}"
                                             ? const Icon(
                                                 Icons.check,
                                                 color: Colors.green,
@@ -179,7 +166,7 @@ class _MyWidgetMassState extends State<MyWidgetMass>
                                 Text(
                                   _textTop.text.isEmpty
                                       ? (_textTop.text =
-                                          listMapMassMass.values.elementAt(0))
+                                          listMapArea.values.elementAt(0))
                                       : "${_textTop.text}",
                                   style: kTextStyle(
                                       size: 16,
@@ -189,7 +176,7 @@ class _MyWidgetMassState extends State<MyWidgetMass>
                                 Text(
                                   _textButtom.text.isEmpty
                                       ? (_textButtom.text =
-                                          listMapMassMass.keys.elementAt(0))
+                                          listMapArea.keys.elementAt(0))
                                       : "${_textButtom.text}",
                                   style: kTextStyle(
                                       size: 38,
@@ -384,20 +371,23 @@ class _MyWidgetMassState extends State<MyWidgetMass>
               ),
             ),
           ),
-          SizedBox(
+          Container(
             width: double.infinity,
             height: size.height - 307,
+            decoration: const BoxDecoration(
+              color: Color(0xff161616),
+            ),
             child: ListView.builder(
-              itemCount: listMapMassMass.length,
+              itemCount: listMapArea.length,
               itemBuilder: (BuildContext context, int index) {
-                if (_textTop.text == listMapMassMass.values.elementAt(index)) {
+                if (_textTop.text == listMapArea.values.elementAt(index)) {
                   return Container();
                 } else {
                   return _itemMeasurementsContanier(
                     lisColor[index % 2],
-                    '${listMapMassMass.values.elementAt(index)}',
-                    "${listMapMassMass.keys.elementAt(index)}",
-                    "${distance(listMapMassMass.keys.elementAt(index))}",
+                    '${listMapArea.values.elementAt(index)}',
+                    "${listMapArea.keys.elementAt(index)}",
+                    "${distance(listMapArea.keys.elementAt(index))}",
                   );
                 }
               },

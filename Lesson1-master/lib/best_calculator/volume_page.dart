@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lesson1/best_calculator/change_theme.dart';
 import 'package:lesson1/utils/constants.dart';
 import 'package:lesson1/widgets/scale_widget.dart';
 
@@ -214,7 +215,7 @@ class _MyWidgetVolumeState extends State<MyWidgetVolume>
                                       : "${_textTop.text}",
                                   style: kTextStyle(
                                       size: 16,
-                                      color: const Color(0xffFF0000),
+                                      color: menuText1,
                                       fontWeight: FontWeight.w400),
                                 ),
                                 Text(
@@ -224,14 +225,14 @@ class _MyWidgetVolumeState extends State<MyWidgetVolume>
                                       : "${_textButtom.text}",
                                   style: kTextStyle(
                                       size: 38,
-                                      color: const Color(0xffFF0000),
+                                      color: menuText1,
                                       fontWeight: FontWeight.w400),
                                 ),
                               ],
                             ),
-                            const Icon(
+                            Icon(
                               Icons.keyboard_arrow_down,
-                              color: Color(0xffFF0000),
+                              color: menuText1,
                               size: 35,
                             ),
                           ],
@@ -297,7 +298,7 @@ class _MyWidgetVolumeState extends State<MyWidgetVolume>
                                         ),
                                         _itemMeasurements(
                                           "⌫",
-                                          const Color(0xffFF0000),
+                                          menuText1,
                                         ),
                                         _itemMeasurements(
                                           "4",
@@ -313,7 +314,7 @@ class _MyWidgetVolumeState extends State<MyWidgetVolume>
                                         ),
                                         _itemMeasurements(
                                           "C",
-                                          const Color(0xffFF0000),
+                                          menuText1,
                                         ),
                                         _itemMeasurements(
                                           "1",
@@ -348,7 +349,7 @@ class _MyWidgetVolumeState extends State<MyWidgetVolume>
                                               "ok",
                                               style: kTextStyle(
                                                 size: 28,
-                                                color: const Color(0xffFF0000),
+                                                color: menuText1,
                                                 fontWeight: FontWeight.w300,
                                               ),
                                             ),
@@ -387,7 +388,7 @@ class _MyWidgetVolumeState extends State<MyWidgetVolume>
                                               "^",
                                               style: kTextStyle(
                                                 size: 28,
-                                                color: const Color(0xffFF0000),
+                                                color: downChange,
                                                 fontWeight: FontWeight.w300,
                                               ),
                                             ),
@@ -406,7 +407,7 @@ class _MyWidgetVolumeState extends State<MyWidgetVolume>
                             : "1",
                         style: kTextStyle(
                           size: sizeText,
-                          color: const Color(0xffFF0000),
+                          color: menuText1,
                         ),
                       ),
                     ),

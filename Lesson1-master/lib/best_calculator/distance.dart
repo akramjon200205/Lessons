@@ -3,6 +3,7 @@ import 'package:flutter/src/animation/animation_controller.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/ticker_provider.dart';
+import 'package:lesson1/best_calculator/change_theme.dart';
 import 'package:lesson1/utils/constants.dart';
 import 'package:lesson1/widgets/scale_widget.dart';
 
@@ -109,7 +110,9 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
   late Size sizes;
 
   String distance(String selectedDistance) {
-    var res = (listDistance[textButtom.text] * double.tryParse(measurements.text) / listDistance[selectedDistance])
+    var res = (listDistance[textButtom.text] *
+            double.tryParse(measurements.text) /
+            listDistance[selectedDistance])
         .toStringAsFixed(10);
     return double.parse(res).toString();
   }
@@ -182,7 +185,7 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
                                       : "${textTop.text}",
                                   style: kTextStyle(
                                       size: 16,
-                                      color: const Color(0xffFF0000),
+                                      color: menuText1,
                                       fontWeight: FontWeight.w400),
                                 ),
                                 Text(
@@ -192,14 +195,14 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
                                       : "${textButtom.text}",
                                   style: kTextStyle(
                                       size: 38,
-                                      color: const Color(0xffFF0000),
+                                      color: menuText1,
                                       fontWeight: FontWeight.w400),
                                 ),
                               ],
                             ),
-                            const Icon(
+                            Icon(
                               Icons.keyboard_arrow_down,
-                              color: Color(0xffFF0000),
+                              color: menuText1,
                               size: 35,
                             ),
                           ],
@@ -265,7 +268,7 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
                                         ),
                                         _itemMeasurements(
                                           "⌫",
-                                          const Color(0xffFF0000),
+                                          menuText1,
                                         ),
                                         _itemMeasurements(
                                           "4",
@@ -281,7 +284,7 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
                                         ),
                                         _itemMeasurements(
                                           "C",
-                                          const Color(0xffFF0000),
+                                          clearColor,
                                         ),
                                         _itemMeasurements(
                                           "1",
@@ -316,7 +319,7 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
                                               "ok",
                                               style: kTextStyle(
                                                 size: 28,
-                                                color: const Color(0xffFF0000),
+                                                color: menuText1,
                                                 fontWeight: FontWeight.w300,
                                               ),
                                             ),
@@ -351,13 +354,10 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
                                                 ),
                                               ),
                                             ),
-                                            child: Text(
-                                              "^",
-                                              style: kTextStyle(
-                                                size: 28,
-                                                color: const Color(0xffFF0000),
-                                                fontWeight: FontWeight.w300,
-                                              ),
+                                            child: Icon(
+                                              Icons.keyboard_arrow_down,
+                                              size: 28,
+                                              color: downChange,
                                             ),
                                           ),
                                         ),
@@ -374,7 +374,7 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
                             : "1",
                         style: kTextStyle(
                           size: sizeText,
-                          color: const Color(0xffFF0000),
+                          color: menuText1,
                         ),
                       ),
                     ),

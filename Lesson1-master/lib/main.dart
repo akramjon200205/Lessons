@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lesson1/best_calculator/best_currency_model.dart';
 import 'package:lesson1/best_calculator/page.dart';
+import 'package:lesson1/calculator/calculator_page.dart';
 void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter<BestCurrencyModel>(BestCurrencyModelAdapter());

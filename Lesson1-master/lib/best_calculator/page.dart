@@ -1,25 +1,22 @@
-import 'dart:convert';
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:http/http.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter/rendering.dart';
 import 'package:lesson1/best_calculator/area_pagea.dart';
+import 'package:lesson1/best_calculator/best_currency_page.dart';
+import 'package:lesson1/best_calculator/cal_constants.dart';
+import 'package:lesson1/best_calculator/change_theme.dart';
+import 'package:lesson1/best_calculator/fuel_page.dart';
 import 'package:lesson1/best_calculator/mass_page.dart';
 import 'package:lesson1/best_calculator/best_currency_model.dart';
-
 import 'package:lesson1/best_calculator/setting_page.dart';
+import 'package:lesson1/best_calculator/temperature_page.dart';
 import 'package:lesson1/best_calculator/volume_page.dart';
 import 'package:lesson1/utils/constants.dart';
 import 'package:lesson1/utils/hive_util.dart';
-
 import 'package:lesson1/widgets/scale_widget.dart';
-import 'package:math_expressions/math_expressions.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
+import 'cooking_page.dart';
 import 'distance.dart';
 
 class BestClaculatePage extends StatefulWidget {
@@ -30,7 +27,7 @@ class BestClaculatePage extends StatefulWidget {
 }
 
 class _BestClaculatePageState extends State<BestClaculatePage>
-    with TickerProviderStateMixin, HiveUtil {
+    with TickerProviderStateMixin, HiveUtil, CalculatorUtils {
   late TabController _tabController;
   late TabController _tabController1;
   final _bestController = TextEditingController(); // controller = output
@@ -43,6 +40,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
   List<BestCurrencyModel> _listCurrency = [];
   BestCurrencyModel? topCur;
   BestCurrencyModel? bottomCur;
+  var scrollConrtoller = ScrollController();
 
   bool click = false;
   bool isPage1 = false;
@@ -54,6 +52,15 @@ class _BestClaculatePageState extends State<BestClaculatePage>
   @override
   void initState() {
     super.initState();
+    scrollConrtoller = ScrollController();
+    scrollConrtoller.addListener(() {
+      if (scrollConrtoller.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        writer("C");
+      }
+      setState(() {});
+    });
+
     _tabController = TabController(length: 3, vsync: this);
     _tabController1 = TabController(length: 7, vsync: this);
     _editingControllerTop.addListener(() {
@@ -96,83 +103,8 @@ class _BestClaculatePageState extends State<BestClaculatePage>
     _editingControllerBottom.dispose();
     _topFocus.dispose();
     _bottomFocus.dispose();
+    scrollConrtoller.dispose();
     super.dispose();
-  }
-
-  Future<bool?> _loadData() async {
-    var isLoad = await loadLocalData();
-    if (isLoad) {
-      try {
-        var response = await get(
-            Uri.parse('https://cbu.uz/uz/arkhiv-kursov-valyut/json/'));
-        if (response.statusCode == 200) {
-          for (final item in jsonDecode(response.body)) {
-            var model = BestCurrencyModel.fromJson(item);
-            if (model.ccy == 'USD') {
-              topCur = model;
-            } else if (model.ccy == 'RUB') {
-              bottomCur = model;
-            }
-            _listCurrency.add(model);
-            await saveBox<String>(dateBox, topCur?.date ?? '', key: dateKey);
-            await saveBox<List<dynamic>>(currencyBox, _listCurrency,
-                key: currencyListKey);
-          }
-          return true;
-        } else {
-          _showMessage('Unknown error');
-        }
-      } on SocketException {
-        _showMessage('Connection error');
-      } catch (e) {
-        _showMessage(e.toString());
-      }
-    } else {
-      return true;
-    }
-    return null;
-  }
-
-  Future<bool> loadLocalData() async {
-    try {
-      var date = await getBox<String>(dateBox, key: dateKey);
-      if (date ==
-          DateFormat('dd.MM.yyyy').format(
-            DateTime.now().add(
-              const Duration(days: -1),
-            ),
-          )) {
-        var list =
-            await getBox<List<dynamic>>(currencyBox, key: currencyListKey) ??
-                [];
-        _listCurrency = List.castFrom<dynamic, BestCurrencyModel>(list);
-        for (var model in _listCurrency) {
-          if (model.ccy == 'USD') {
-            topCur = model;
-          } else if (model.ccy == 'RUB') {
-            bottomCur = model;
-          }
-        }
-        return false;
-      } else {
-        return true;
-      }
-    } catch (e) {
-      log(e.toString());
-    }
-    return true;
-  }
-
-  _showMessage(String text, {bool isError = true}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: isError ? Colors.red : Colors.green[400],
-        content: Text(
-          text,
-          style: kTextStyle(size: 15, fontWeight: FontWeight.w500),
-        ),
-      ),
-    );
   }
 
   var scaffoldKey = GlobalKey<ScaffoldState>();
@@ -185,109 +117,19 @@ class _BestClaculatePageState extends State<BestClaculatePage>
     Navigator.of(context).pop();
   }
 
-  String spliter(String text) {
-    var result = text;
-    ["/", "+", "-", "x"].forEach((element) {
-      result = result.split(element).last;
-    });
-    return result;
-  }
-
-  buttonCalculator(String buttonText) {
-    if (buttonText == "⌫") {
-      _bestController.text =
-          _bestController.text.substring(0, _bestController.text.length - 1);
-
-      expression = _bestController.text;
-      expression = expression.replaceAll("x", "*");
-      try {
-        Parser p = Parser();
-        Expression exp = p.parse(expression);
-        ContextModel cm = ContextModel();
-        _bestResultController.text =
-            double.parse("${exp.evaluate(EvaluationType.REAL, cm)}")
-                .toStringAsFixed(2);
-      } catch (e) {
-        _bestResultController.text = "";
-      }
-    } else if (buttonText == "=") {
-      expression = _bestController.text;
-      expression = expression.replaceAll("x", '*');
-      try {
-        Parser p = Parser();
-        Expression exp = p.parse(expression);
-        ContextModel cm = ContextModel();
-        _bestResultController.text =
-            double.parse("${exp.evaluate(EvaluationType.REAL, cm)}")
-                .toStringAsFixed(2);
-        _bestController.text = _bestResultController.text;
-        _bestResultController.text = "";
-      } catch (e) {
-        _bestResultController.text = "";
-      }
-    } else if (buttonText == "%") {
-      if (_bestController.text.isNotEmpty) {
-        var last = spliter(_bestController.text);
-        var _controllerText = _bestController.text;
-        _bestController.text =
-            "${_controllerText.substring(0, _controllerText.length - last.length)}${double.parse(last) / 100}";
-      } else if (buttonText == "+" ||
-          buttonText == "-" ||
-          buttonText == "x" ||
-          buttonText == "/") {
-        if (_bestController.text[_bestController.text.length - 1] == "+" ||
-            _bestController.text[_bestController.text.length - 1] == "-" ||
-            _bestController.text[_bestController.text.length - 1] == "x" ||
-            _bestController.text[_bestController.text.length - 1] == "/") {}
-      }
-    } else if (buttonText == ".") {
-      if (!spliter(_bestController.text).contains(".")) {
-        _bestController.text += buttonText;
-      }
-    } else if (buttonText == "()") {
-    } else if (buttonText == "x^n") {
-      // if (double.parse(_bestController.text[_bestController.text.length - 1]) >=
-      //         0 &&
-      //     double.parse(_bestController.text[_bestController.text.length - 1]) <=
-      //         9) {
-
-      // }
-    } else {
-      if (_bestController.text == "0") {
-        _bestController.text = buttonText;
-      } else {
-        _bestController.text = _bestController.text + buttonText;
-        expression = _bestController.text;
-        expression = expression.replaceAll("x", '*');
-        try {
-          Parser p = Parser();
-          Expression exp = p.parse(expression);
-          ContextModel cm = ContextModel();
-
-          _bestResultController.text =
-              double.parse("${exp.evaluate(EvaluationType.REAL, cm)}")
-                  .toStringAsFixed(2);
-        } catch (e) {
-          _bestResultController.text = "";
-        }
-      }
-    }
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: const Color(0xff262626),
+      backgroundColor: backgroundColor2,
       appBar: AppBar(
-        backgroundColor: const Color(0xff161616),
+        backgroundColor: appBarColor,
         leading: GestureDetector(
           onTap: () => scaffoldKey.currentState?.openDrawer(),
-          child: const Icon(
+          child: Icon(
             Icons.menu,
-            color: color1,
+            color: menuText1, // drawer uchun rangi
             size: 25,
           ),
         ),
@@ -298,16 +140,16 @@ class _BestClaculatePageState extends State<BestClaculatePage>
               onTap: () {
                 scaffoldKey.currentState?.openEndDrawer();
               },
-              child: Image.asset(
-                "assets/settings_icon.png",
-                width: 26.31,
-                height: 28.44,
+              child: Icon(
+                Icons.settings,
+                color: menuText1,
+                size: 28,
               ),
             ),
           ),
         ],
         title: TabBar(
-          indicatorColor: const Color(0xff161616),
+          indicatorColor: appBarColor,
           // indicatorWeight: 0.1,
           // indicatorSize: TabBarIndicatorSize.tab,
 
@@ -318,6 +160,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                 "assets/claculate_icon.png",
                 width: 22.9,
                 height: 31.36,
+                color: menuText1,
               ),
             ),
             Tab(
@@ -325,6 +168,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                 "assets/currency_icon.png",
                 width: 29.58,
                 height: 29.58,
+                color: menuText1,
               ),
             ),
             Tab(
@@ -332,6 +176,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                 "assets/lines_icon.png",
                 width: 20,
                 height: 31,
+                color: menuText1,
               ),
             ),
           ],
@@ -359,21 +204,21 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                         height: 20,
                       ),
                       _itemPage(
-                          "calcualtor_fragment_1", "calcualtor_fragment_2"),
+                          "calcualtor_fragment_1", "calcualtor_fragment_2", 1),
                       const SizedBox(
                         height: 20,
                       ),
                       _itemPage(
-                          "calcualtor_fragment_3", "calcualtor_fragment_4"),
+                          "calcualtor_fragment_3", "calcualtor_fragment_4", 3),
                       const SizedBox(
                         height: 20,
                       ),
                       _itemPage(
-                          "calculator_fragment_5", "calcualtor_fragment_6"),
+                          "calculator_fragment_5", "calcualtor_fragment_6", 5),
                       const SizedBox(
                         height: 20,
                       ),
-                      _itemPage("google_pixel_2", "xalcualtor_fragment"),
+                      _itemPage("google_pixel_2", "xalcualtor_fragment", 7),
                       const SizedBox(
                         height: 20,
                       ),
@@ -501,8 +346,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: const Color(0xff262626),
-                            border: Border.all(
-                                color: const Color(0xffBBBBBB), width: 2),
+                            border: Border.all(color: textColor, width: 2),
                           ),
                           child: const Icon(
                             Icons.restore_rounded,
@@ -521,12 +365,13 @@ class _BestClaculatePageState extends State<BestClaculatePage>
               Padding(
                 padding: const EdgeInsets.only(right: 16, left: 16),
                 child: TextField(
-                  controller: _bestController,
+                  controller: calculateController,
                   maxLines: 1,
-                  style: kTextStyle(fontWeight: FontWeight.w400),
+                  style: kTextStyle(fontWeight: FontWeight.w400, size: 28),
                   textAlign: TextAlign.end,
                   readOnly: true,
                   decoration: const InputDecoration(
+                    border: InputBorder.none,
                     hintText: '',
                     hintStyle: TextStyle(
                         fontSize: 28,
@@ -542,12 +387,13 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                 padding: const EdgeInsets.only(right: 16, left: 16),
                 child: TextField(
                   maxLines: 1,
-                  controller: _bestResultController,
-                  style: kTextStyle(fontWeight: FontWeight.w700),
+                  controller: resultController,
+                  style: kTextStyle(fontWeight: FontWeight.w700, size: 28),
                   textAlign: TextAlign.end,
                   readOnly: true,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
+                    border: InputBorder.none,
                     hintText: '',
                     hintStyle:
                         TextStyle(fontSize: 40, fontWeight: FontWeight.w700),
@@ -556,7 +402,9 @@ class _BestClaculatePageState extends State<BestClaculatePage>
               ),
               GridView.count(
                 padding: const EdgeInsets.only(top: 4),
-                physics: const NeverScrollableScrollPhysics(),
+                controller: scrollConrtoller,
+                physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
                 shrinkWrap: true,
                 crossAxisSpacing: 1,
                 mainAxisSpacing: 1.04,
@@ -566,92 +414,109 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                 children: [
                   _itemContanier(
                     "xⁿ",
-                    const Color(0xffFF0000),
+                    menuText1,
+                    const Color(0xff161616),
                   ),
                   _itemContanier(
                     "%",
-                    const Color(0xffFF0000),
+                    menuText1,
+                    const Color(0xff161616),
                   ),
                   _itemContanier(
                     "/",
-                    const Color(0xffFF0000),
+                    menuText1,
+                    const Color(0xff161616),
                   ),
                   GestureDetector(
                     onLongPress: () {
                       setState(() {
-                        _bestController.text = "";
-                        _bestResultController.text = "";
+                        calculateController.text = "";
+                        resultController.text = "";
                       });
                     },
                     child: _itemContanier(
-                      "⌫",
-                      const Color(0xffFF0000),
+                      "del",
+                      menuText1,
+                      const Color(0xff161616),
                     ),
                   ),
                   _itemContanier(
                     "7",
-                    const Color(0xffBBBBBB),
+                    textColor,
+                    containerColor,
                   ),
                   _itemContanier(
                     "8",
-                    const Color(0xffBBBBBB),
+                    textColor,
+                    containerColor,
                   ),
                   _itemContanier(
                     "9",
-                    const Color(0xffBBBBBB),
+                    textColor,
+                    containerColor,
                   ),
                   _itemContanier(
                     "x",
-                    const Color(0xffFF0000),
+                    menuText1,
+                    const Color(0xff161616),
                   ),
                   _itemContanier(
                     "4",
-                    const Color(0xffBBBBBB),
+                    textColor,
+                    containerColor,
                   ),
                   _itemContanier(
                     "5",
-                    const Color(0xffBBBBBB),
+                    textColor,
+                    containerColor,
                   ),
                   _itemContanier(
                     "6",
-                    const Color(0xffBBBBBB),
+                    textColor,
+                    containerColor,
                   ),
                   _itemContanier(
                     "-",
-                    const Color(0xffFF0000),
+                    menuText1,
+                    const Color(0xff161616),
                   ),
                   _itemContanier(
                     "1",
-                    const Color(0xffBBBBBB),
+                    textColor,
+                    containerColor,
                   ),
                   _itemContanier(
                     "2",
-                    const Color(0xffBBBBBB),
+                    textColor,
+                    containerColor,
                   ),
                   _itemContanier(
                     "3",
-                    const Color(0xffBBBBBB),
+                    textColor,
+                    containerColor,
                   ),
                   _itemContanier(
                     "+",
-                    const Color(0xffFF0000),
+                    menuText1,
+                    const Color(0xff161616),
                   ),
-                  _itemContanier(
-                    ".",
-                    const Color(0xffBBBBBB),
-                  ),
+                  _itemContanier(".", textColor, containerColor),
                   _itemContanier(
                     "0",
-                    const Color(0xffBBBBBB),
+                    textColor,
+                    containerColor,
                   ),
                   _itemContanier(
-                      "()",
-                      const Color(
-                        0xffBBBBBB,
-                      )),
+                    "( )",
+                    const Color(
+                      0xffBBBBBB,
+                    ),
+                    containerColor,
+                  ),
                   _itemContanier(
                     "=",
-                    const Color(0xffFF0000),
+                    menuText1,
+                    const Color(0xff161616),
                   ),
                 ],
               ),
@@ -674,281 +539,15 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                   alignment: Alignment.center,
                   width: double.infinity,
                   height: 31,
-                  decoration: const BoxDecoration(
-                    color: color1,
+                  decoration: BoxDecoration(
+                    color: menuText1,
                   ),
                   child: Image.asset("assets/parenthesis.png"),
                 ),
               ),
             ],
           ),
-
-          // Center(
-          //     child: Text(
-          //   "salom",
-          //   style: kTextStyle(size: 38),
-          // )),
-
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              color: Color(0xff434343),
-            ),
-            child: Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 29),
-                ),
-                FutureBuilder(
-                  future: _listCurrency.isEmpty ? _loadData() : null,
-                  builder:
-                      (BuildContext context, AsyncSnapshot<bool?> snapshot) {
-                    if (snapshot.hasData) {
-                      return Container(
-                        width: 385,
-                        height: 200,
-                        decoration: const BoxDecoration(
-                          color: Color(0xff262626),
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 7,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 13, right: 7),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 7),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "From currency",
-                                        style: kTextStyle(
-                                            size: 16,
-                                            color: const Color(0xff00E0FF),
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                      Icon(
-                                        Icons.refresh,
-                                        size: 40,
-                                        color: Colors.grey[300],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              _itemCurrency(
-                                const Color(0xff00E0FF),
-                                topCur,
-                                _editingControllerTop,
-                                _topFocus,
-                              ),
-                              const SizedBox(
-                                height: 7,
-                              ),
-                              Text(
-                                "In currency",
-                                style: kTextStyle(
-                                    size: 16,
-                                    color: const Color(0xffFF4D00),
-                                    fontWeight: FontWeight.w400),
-                              ),
-                              const SizedBox(
-                                height: 7,
-                              ),
-                              _itemCurrency(
-                                const Color(0xffFF4D00),
-                                bottomCur,
-                                _editingControllerBottom,
-                                _bottomFocus,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Expanded(
-                        child: Center(
-                          child: Text(
-                            'Error',
-                            style: kTextStyle(size: 18),
-                          ),
-                        ),
-                      );
-                    } else {
-                      return const Expanded(
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
-                const SizedBox(
-                  height: 42,
-                ),
-                GridView.count(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 1,
-                  mainAxisSpacing: 1,
-                  primary: false,
-                  childAspectRatio: size.height * 0.0024,
-                  children: [
-                    _itemButtonCurrency(
-                      "7",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemButtonCurrency(
-                      "8",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemButtonCurrency(
-                      "9",
-                      const Color(0xffBBBBBB),
-                    ),
-                    scaleWidget(
-                      onTap: () {},
-                      scale: 0.8,
-                      child: Container(
-                        width: 94.89,
-                        height: 81,
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          color: Color(0xff161616),
-                          border: Border(
-                            top: BorderSide(
-                              color: Color(0xff54617F),
-                              width: 1,
-                            ),
-                            right: BorderSide(
-                              color: Color(0xff54617F),
-                              width: 1,
-                            ),
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.backspace_outlined,
-                          size: 25,
-                          color: Color(0xffFF0000),
-                        ),
-                      ),
-                    ),
-                    _itemButtonCurrency(
-                      "4",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemButtonCurrency(
-                      "5",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemButtonCurrency(
-                      "6",
-                      const Color(0xffBBBBBB),
-                    ),
-                    scaleWidget(
-                      onTap: () {},
-                      scale: 0.8,
-                      child: Container(
-                          width: 94.89,
-                          height: 81,
-                          alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            color: Color(0xff161616),
-                            border: Border(
-                              top: BorderSide(
-                                color: Color(0xff54617F),
-                                width: 1,
-                              ),
-                              right: BorderSide(
-                                color: Color(0xff54617F),
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                          child: Image.asset(
-                            "assets/down_top.png",
-                            width: 25.19,
-                            height: 49.84,
-                          )),
-                    ),
-                    _itemButtonCurrency(
-                      "1",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemButtonCurrency(
-                      "2",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemButtonCurrency(
-                      "3",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemButtonCurrency(
-                      "C",
-                      const Color(0xffFF0000),
-                    ),
-                    _itemButtonCurrency(
-                      ",",
-                      const Color(0xffBBBBBB),
-                    ),
-                    _itemButtonCurrency(
-                      "0",
-                      const Color(0xffBBBBBB),
-                    ),
-                    Expanded(
-                      child: scaleWidget(
-                        onTap: () {},
-                        scale: 0.8,
-                        child: Container(
-                          width: 188,
-                          height: 81,
-                          alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            color: Color(0xff161616),
-                            border: Border(
-                              top: BorderSide(
-                                color: Color(0xff54617F),
-                                width: 1,
-                              ),
-                              right: BorderSide(
-                                color: Color(0xff54617F),
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            "00",
-                            style: kTextStyle(
-                                size: 28,
-                                color: const Color(0xffBBBBBB),
-                                fontWeight: FontWeight.w400),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          BestCurrencyPage(),
           Scaffold(
             backgroundColor: const Color(0xff262626),
             appBar: AppBar(
@@ -963,7 +562,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                       "DISTANCE",
                       style: kTextStyle(
                         size: 16,
-                        color: const Color(0xffFF0000),
+                        color: menuText1,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -973,7 +572,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                       "AREA",
                       style: kTextStyle(
                         size: 16,
-                        color: const Color(0xffFF0000),
+                        color: menuText1,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -983,7 +582,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                       "MASS",
                       style: kTextStyle(
                         size: 16,
-                        color: const Color(0xffFF0000),
+                        color: menuText1,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -993,7 +592,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                       "VOLUME",
                       style: kTextStyle(
                         size: 16,
-                        color: const Color(0xffFF0000),
+                        color: menuText1,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -1003,7 +602,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                       "TEMPERATURE",
                       style: kTextStyle(
                         size: 16,
-                        color: const Color(0xffFF0000),
+                        color: menuText1,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -1013,7 +612,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                       "FUEL",
                       style: kTextStyle(
                         size: 16,
-                        color: const Color(0xffFF0000),
+                        color: menuText1,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -1023,7 +622,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                       "COOKING",
                       style: kTextStyle(
                         size: 16,
-                        color: const Color(0xffFF0000),
+                        color: menuText1,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -1033,38 +632,14 @@ class _BestClaculatePageState extends State<BestClaculatePage>
             ),
             body: TabBarView(
               controller: _tabController1,
-              children: <Widget>[
-                const MyWidgetDistance(),
-                const MyWidgetArea(),
-                const MyWidgetMass(),
-                const MyWidgetVolume(),
-                Center(
-                  child: Text(
-                    "ABS",
-                    style: kTextStyle(
-                      size: 30,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    "ABS",
-                    style: kTextStyle(
-                      size: 30,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    "ABS",
-                    style: kTextStyle(
-                      size: 30,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+              children: const <Widget>[
+                MyWidgetDistance(),
+                MyWidgetArea(),
+                MyWidgetMass(),
+                MyWidgetVolume(),
+                MyWidgetTemperature(),
+                MyWidgetFuel(),
+                MyWidgetCooking(),
               ],
             ),
           ),
@@ -1082,8 +657,8 @@ class _BestClaculatePageState extends State<BestClaculatePage>
           child: Container(
             height: 30,
             width: double.infinity,
-            decoration: const BoxDecoration(
-              color: Color(0xffFF0000),
+            decoration: BoxDecoration(
+              color: menuText1,
             ),
             child: Image.asset("assets/parenthesis.png"),
           ),
@@ -1149,113 +724,19 @@ class _BestClaculatePageState extends State<BestClaculatePage>
     );
   }
 
-  Widget _itemButtonCurrency(dynamic textCur, Color colorCur) {
-    return scaleWidget(
-      onTap: () {},
-      scale: 0.8,
-      child: Container(
-        width: 94.89,
-        height: 81,
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          color: Color(0xff161616),
-          border: Border(
-            top: BorderSide(
-              color: Color(0xff54617F),
-              width: 1,
-            ),
-            right: BorderSide(
-              color: Color(0xff54617F),
-              width: 1,
-            ),
-          ),
-        ),
-        child: Text(
-          textCur,
-          style: kTextStyle(
-              size: 28, color: colorCur, fontWeight: FontWeight.w400),
-        ),
-      ),
-    );
-  }
-
-  Widget _itemCurrency(Color colorCurrency, BestCurrencyModel? model,
-      TextEditingController controller, FocusNode focusNode) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: () {},
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SvgPicture.asset(
-                  'assets/flags/${model?.ccy?.substring(0, 2).toLowerCase()}.svg',
-                  height: 50,
-                  width: 50,
-                ),
-                const SizedBox(
-                  width: 9,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      model?.ccy ?? 'UNK',
-                      style: kTextStyle(size: 16, fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      model?.ccyNmEn ?? '',
-                      style: kTextStyle(
-                          fontWeight: FontWeight.w500, color: Colors.white54),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        Container(
-          width: 170,
-          height: 34,
-          decoration: BoxDecoration(
-            color: const Color(0xff262626),
-            borderRadius: BorderRadius.circular(3),
-            border: Border.all(color: colorCurrency, width: 2),
-          ),
-          child: TextField(
-            controller: controller,
-            focusNode: focusNode,
-            style: kTextStyle(size: 16, fontWeight: FontWeight.bold),
-            keyboardType: TextInputType.number,
-            textAlign: TextAlign.end,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              isDense: true,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _itemContanier(String text, Color colors) {
+  Widget _itemContanier(String text, Color colors, Color contanierColor) {
     return scaleWidget(
       onTap: () {
-        buttonCalculator(text);
+        writer(text);
       },
       scale: 0.8,
       child: Container(
         alignment: Alignment.center,
         width: 102,
         height: 78.17,
-        decoration: const BoxDecoration(
-          color: Color(0xff161616),
-          border: Border(
+        decoration: BoxDecoration(
+          color: contanierColor,
+          border: const Border(
             top: BorderSide(
               color: Color(0xff5A5A5A),
               width: 1,
@@ -1270,19 +751,31 @@ class _BestClaculatePageState extends State<BestClaculatePage>
     );
   }
 
-  Widget _itemPage(String text, String text2) {
+  Widget _itemPage(String text, String text2, int number) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Image.asset(
-          "assets/$text.png",
-          width: 130,
-          height: 210,
+        InkWell(
+          onTap: () {
+            changeTheme(number);
+            setState(() {});
+          },
+          child: Image.asset(
+            "assets/$text.png",
+            width: 130,
+            height: 210,
+          ),
         ),
-        Image.asset(
-          "assets/$text2.png",
-          width: 130,
-          height: 210,
+        InkWell(
+          onTap: () {
+            changeTheme(number + 1);
+            setState(() {});
+          },
+          child: Image.asset(
+            "assets/$text2.png",
+            width: 130,
+            height: 210,
+          ),
         ),
       ],
     );
@@ -1301,6 +794,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
     );
     return AnimatedTextKit(
       pause: const Duration(milliseconds: 600),
+      stopPauseOnTap: true,
       animatedTexts: [
         ColorizeAnimatedText(controller() ?? "",
             textStyle: colorizeTextStyle, colors: colorizeColors),
