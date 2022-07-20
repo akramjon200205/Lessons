@@ -75,10 +75,7 @@ class _MyWidgetVolumeState extends State<MyWidgetVolume>
     'gill': 7264.664,
   };
 
-  List<Color> lisColor = [
-    const Color(0xff262626),
-    const Color(0xff161616),
-  ];
+  List<Color> listColor = [distanceColor1, distanceColor2];
 
   final controllerDistance = TextEditingController();
   final _textTop = TextEditingController();
@@ -189,7 +186,7 @@ class _MyWidgetVolumeState extends State<MyWidgetVolume>
                                         context,
                                         "${listMapVolume.values.elementAt(index)}",
                                         "${listMapVolume.keys.elementAt(index)}",
-                                        lisColor[index % 2],
+                                        listColor[index % 2],
                                         icon: _textTop.text ==
                                                 "${listMapVolume.values.elementAt(index)}"
                                             ? const Icon(
@@ -426,7 +423,7 @@ class _MyWidgetVolumeState extends State<MyWidgetVolume>
                   return Container();
                 } else {
                   return _itemMeasurementsContanier(
-                    lisColor[index % 2],
+                    listColor[index % 2],
                     '${listMapVolume.values.elementAt(index)}',
                     "${listMapVolume.keys.elementAt(index)}",
                     "${distance(listMapVolume.keys.elementAt(index))}",
@@ -452,15 +449,7 @@ class _MyWidgetVolumeState extends State<MyWidgetVolume>
         width: 95,
         height: 81,
         alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          color: Color(0xff161616),
-          border: Border(
-            top: BorderSide(
-              color: Color(0xff5A5A5A),
-              width: 1,
-            ),
-          ),
-        ),
+        decoration: decorationCurVal,
         child: Text(
           text,
           style: kTextStyle(

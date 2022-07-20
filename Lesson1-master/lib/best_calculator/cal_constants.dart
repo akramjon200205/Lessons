@@ -1,12 +1,17 @@
+import 'dart:math';
+
 import 'package:eval_ex/expression.dart';
 import 'package:flutter/material.dart';
+import 'package:lesson1/utils/hive_util.dart';
 
-class CalculatorUtils {   
+class CalculatorUtils{
   final calculateController = TextEditingController();
   final resultController = TextEditingController();
   double topFieldSize = 35;
   double bottomFieldSize = 45;
-   int theme = 10;
+  var scrollConrtoller = ScrollController();
+  int theme = 10;
+  
   final List<String> buttons = [
     'C',
     '+/-',
@@ -42,96 +47,33 @@ class CalculatorUtils {
     '9'
   ];
   final List<String> operators = ['/', '+', '-', '%', '=', '*', 'del'];
+  final List<String> operatorsCal = ['/', '+', '-', '*'];
   var lastOperator = '';
   var lastOperated = '';
   bool isSimple = true;
+
   
-  writer(String command) {
-    if (command == 'C') {
-      calculateController.text = '';
-      resultController.text = '';
-      topFieldSize = 35;
-      bottomFieldSize = 45;
-    } else if (command == 'del') {
-      if (calculateController.text.isNotEmpty) {
-        calculateController.text = calculateController.text
-            .substring(0, calculateController.text.length - 1);
-        var res = calculate(calculateController.text);
-        if (res != null) {
-          resultController.text = "=$res";
-        }
-      }
-    } else if (command == '=') {
-      if (resultController.text.isEmpty) {}
-      if (resultController.text.isNotEmpty) {
-        calculateController.text = resultController.text.substring(1);
-        resultController.text = '';
-      } else {}
-    } else if (command == '+/-') {
-      if (resultController.text.length > 1) {
-        if (resultController.text.contains('-')) {
-          resultController.text = '=${resultController.text.substring(2)}';
-        } else {
-          resultController.text = '=-${resultController.text.substring(1)}';
-        }
-      }
-    } else if (command == '%') {
-      if (calculateController.text.isNotEmpty) {
-        var last = splitter(calculateController.text);
-        var calculateText = calculateController.text;
-        calculateController.text =
-            '${calculateText.substring(0, calculateText.length - last.length)}${double.parse(last) / 100}';
-        var res = calculate(calculateController.text);
-        if (res != null) {
-          resultController.text = "=$res";
-        }
-      }
-    } else if (command == '/' ||
-        command == '*' ||
-        command == '+' ||
-        command == '-') {
-      lastOperator = command;
-      if (calculateController.text.isNotEmpty &&
-          !isOperator(
-              calculateController.text[calculateController.text.length - 1])) {
-        calculateController.text += command;
-        var res = calculate(calculateController.text);
-        if (res != null) {
-          resultController.text = "=$res";
-        }
-      }
-    } else if (command == '.') {
-      if (calculateController.text.isNotEmpty &&
-          !isOperator(
-              calculateController.text[calculateController.text.length - 1])) {
-        if (calculateController.text.isNotEmpty) {
-          var last = splitter(calculateController.text);
-          if (!last.contains('.')) {
-            calculateController.text += command;
-            var res = calculate(calculateController.text);
-            if (res != null) {
-              resultController.text = "=$res";
-            }
-          }
-        }
-      }
-    } else {
-      if (resultController.text.isEmpty &&
-          calculateController.text.isNotEmpty) {
-        calculateController.text = command;
-        resultController.text = command;
-      } else {
-        calculateController.text += command;
-        var res = calculate(calculateController.text);
-        if (res != null) {
-          resultController.text = "=$res";
-        }
-      }
-    }
-  }
 
   String splitter(String string) {
     final List<String> operators = ['/', '+', '-', '*'];
+    var result = string;
+    for (var element in operators) {
+      result = result.split(element).last;
+    }
+    return result;
+  }
+
+  String splitterXn(String string) {
+    final List<String> operators = ["^"];
+    var result = string;
+    for (var element in operators) {
+      result = result.split(element).first;
+    }
+    return result;
+  }
+
+  String splitterXnLast(String string) {
+    final List<String> operators = ["^"];
     var result = string;
     for (var element in operators) {
       result = result.split(element).last;

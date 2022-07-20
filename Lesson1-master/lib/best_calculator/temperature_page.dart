@@ -27,11 +27,7 @@ class _MyWidgetTemperatureState extends State<MyWidgetTemperature>
     'F': 33.6,
   };
 
-  List<Color> lisColor = [
-    const Color(0xff262626),
-    const Color(0xff161616),
-  ];
-
+ List<Color> listColor = [distanceColor1, distanceColor2];
   final controllerDistance = TextEditingController();
   final _textTop = TextEditingController();
   final _textButtom = TextEditingController();
@@ -138,7 +134,7 @@ class _MyWidgetTemperatureState extends State<MyWidgetTemperature>
                                         context,
                                         "${listMapArea.values.elementAt(index)}",
                                         "${listMapArea.keys.elementAt(index)}",
-                                        lisColor[index % 2],
+                                        listColor[index % 2],
                                         icon: _textTop.text ==
                                                 "${listMapArea.values.elementAt(index)}"
                                             ? const Icon(
@@ -378,7 +374,7 @@ class _MyWidgetTemperatureState extends State<MyWidgetTemperature>
                   return Container();
                 } else {
                   return _itemMeasurementsContanier(
-                    lisColor[index % 2],
+                    listColor[index % 2],
                     '${listMapArea.values.elementAt(index)}',
                     "${listMapArea.keys.elementAt(index)}",
                     "${distance(listMapArea.keys.elementAt(index))}",
@@ -404,15 +400,7 @@ class _MyWidgetTemperatureState extends State<MyWidgetTemperature>
         width: 95,
         height: 81,
         alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          color: Color(0xff161616),
-          border: Border(
-            top: BorderSide(
-              color: Color(0xff5A5A5A),
-              width: 1,
-            ),
-          ),
-        ),
+        decoration: decorationCurVal,
         child: Text(
           text,
           style: kTextStyle(

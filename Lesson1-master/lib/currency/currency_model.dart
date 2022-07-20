@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'currency_model.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 2)
 class CurrencyModel extends HiveObject {
   @HiveField(0)
   int? id;

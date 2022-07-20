@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'weather_model.g.dart';
 
-@HiveType(typeId: 1)
+@HiveType(typeId: 3)
 class WeatherModel extends HiveObject {
   @HiveField(0)
   String? temp;

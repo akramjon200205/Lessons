@@ -1,6 +1,10 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lesson1/best_calculator/area_pagea.dart';
 import 'package:lesson1/best_calculator/best_currency_page.dart';
 import 'package:lesson1/best_calculator/cal_constants.dart';
@@ -11,10 +15,12 @@ import 'package:lesson1/best_calculator/best_currency_model.dart';
 import 'package:lesson1/best_calculator/setting_page.dart';
 import 'package:lesson1/best_calculator/temperature_page.dart';
 import 'package:lesson1/best_calculator/volume_page.dart';
+import 'package:lesson1/main.dart';
 import 'package:lesson1/utils/constants.dart';
 import 'package:lesson1/utils/hive_util.dart';
 import 'package:lesson1/widgets/scale_widget.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'cooking_page.dart';
 import 'distance.dart';
@@ -41,11 +47,16 @@ class _BestClaculatePageState extends State<BestClaculatePage>
   BestCurrencyModel? topCur;
   BestCurrencyModel? bottomCur;
   var scrollConrtoller = ScrollController();
+  static ValueNotifier<String> enteredValue = ValueNotifier("");
+
+  late List hiveMap;
+  late List hiveList;
 
   bool click = false;
   bool isPage1 = false;
   bool isPage2 = false;
   bool isPage3 = false;
+  double animCricleClear = 0;
 
   String expression = "";
 
@@ -53,12 +64,29 @@ class _BestClaculatePageState extends State<BestClaculatePage>
   void initState() {
     super.initState();
     scrollConrtoller = ScrollController();
+
+    // scrollConrtoller.addListener(() {
+    //   if (scrollConrtoller.position.userScrollDirection ==
+    //           ScrollDirection.forward &&
+    //       calculateController.text.contains('+')) {
+    //     calculateController.text = resultController.text.substring(1);
+    //     resultController.text = '';
+    //   }
+    //   setState(() {});
+    // });
+
     scrollConrtoller.addListener(() {
       if (scrollConrtoller.position.userScrollDirection ==
           ScrollDirection.forward) {
         writer("C");
       }
+      animCricleClear = 20;
       setState(() {});
+
+      Timer(Duration(milliseconds: 1), () async {
+        animCricleClear = 0;
+        setState(() {});
+      });
     });
 
     _tabController = TabController(length: 3, vsync: this);
@@ -92,6 +120,123 @@ class _BestClaculatePageState extends State<BestClaculatePage>
       }
     });
   }
+
+  writer(String command) async {
+    if (command == 'C') {
+      calculateController.text = '';
+      resultController.text = '';
+      topFieldSize = 35;
+      bottomFieldSize = 45;
+    } else if (command == 'del') {
+      if (calculateController.text.isNotEmpty) {
+        calculateController.text = calculateController.text
+            .substring(0, calculateController.text.length - 1);
+        var res = calculate(calculateController.text);
+        if (res != null) {
+          resultController.text = "=$res";
+        }
+      }
+    } else if (command == '=') {
+      if (resultController.text.isEmpty) {}
+      if (resultController.text.isNotEmpty) {
+        box.put("${resultController.text}", ["${calculateController.text}"]);
+
+        hiveMap = box.values.toList();
+        hiveList = box.keys.toList();
+        print(box.get("${resultController.text}"));
+        calculateController.text = resultController.text.substring(1);
+        resultController.text = '';
+      } else {}
+    } else if (command == '+/-') {
+      if (resultController.text.length > 1) {
+        if (resultController.text.contains('-')) {
+          resultController.text = '=${resultController.text.substring(2)}';
+        } else {
+          resultController.text = '=-${resultController.text.substring(1)}';
+        }
+      }
+    } else if (command == '%') {
+      if (calculateController.text.isNotEmpty) {
+        var last = splitter(calculateController.text);
+
+        var calculateText = calculateController.text;
+        calculateController.text =
+            '${calculateText.substring(0, calculateText.length - last.length)}${double.parse(last) / 100}';
+        var res = calculate(calculateController.text);
+        if (res != null) {
+          resultController.text = "=$res";
+        }
+      }
+    } else if (command == '/' ||
+        command == '*' ||
+        command == '+' ||
+        command == '-') {
+      lastOperator = command;
+      if (calculateController.text.isNotEmpty &&
+          !isOperator(
+              calculateController.text[calculateController.text.length - 1])) {
+        calculateController.text += command;
+        var res = calculate(calculateController.text);
+        if (res != null) {
+          resultController.text = "=$res";
+        }
+      }
+    } else if (command == '.') {
+      if (calculateController.text.isNotEmpty &&
+          !isOperator(
+              calculateController.text[calculateController.text.length - 1])) {
+        if (calculateController.text.isNotEmpty) {
+          var last = splitter(calculateController.text);
+          if (!last.contains('.')) {
+            calculateController.text += command;
+            var res = calculate(calculateController.text);
+            if (res != null) {
+              resultController.text = "=$res";
+            }
+          }
+        }
+      }
+    } else if (command == "xⁿ") {
+      calculateController.text += "^";
+    } else {
+      if (resultController.text.isEmpty &&
+          calculateController.text.isNotEmpty) {
+        calculateController.text = command;
+        resultController.text = command;
+      } else {
+        calculateController.text += command;
+        if (!calculateController.text.contains("^")) {
+        } else {
+          var last = splitter(calculateController.text);
+          var calculateText = calculateController.text;
+          var first = splitterXn(last);
+          var lastXn = splitterXnLast(last);
+          calculateController.text =
+              '${calculateText.substring(0, calculateText.length - last.length)}${pow(double.parse(first), double.parse(lastXn))}';
+        }
+        var res = calculate(calculateController.text);
+        if (res != null) {
+          resultController.text = "=$res";
+        }
+      }
+    }
+  }
+
+  // void _saveNumber() async {
+  //   final SharedPreferences prefs = await _prefs;
+  //   prefs.setString('savedNumber', calculateController.text);
+  //   setState(() {
+  //     _savedNumber = _randomNumber;
+  //   });
+  // }
+
+  // void _loadNumber() async {
+  //   final SharedPreferences prefs = await _prefs;
+  //   final savedNumber = prefs.getInt('savedNumber') ?? 0;
+  //   setState(() {
+  //     _randomNumber = savedNumber.toDouble();
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -257,101 +402,245 @@ class _BestClaculatePageState extends State<BestClaculatePage>
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+              Container(
+                width: double.infinity,
+                height: size.height / 3,
+                child: Stack(
                   children: [
-                    Container(
-                        alignment: Alignment.center,
-                        width: size.width * 0.68,
-                        child: colorizeAnimation()),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: GestureDetector(
-                        onTap: () {
-                          showModalBottomSheet<void>(
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Container(
-                                height: size.height * 0.89,
-                                color: const Color(0xff262626),
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 17, right: 17),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          TextButton(
-                                            onPressed: () {},
-                                            child: Text(
-                                              "history",
-                                              style: kTextStyle(
-                                                size: 18,
-                                                fontWeight: FontWeight.w400,
-                                                color: const Color(0xffFF0000),
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15, right: 15),
+                          child: Row(                            
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Stack(
+                                children: [
+                                  Container(
+                                  alignment: Alignment.center,
+                                  width: size.width * 0.68,
+                                  child: colorizeAnimation()),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 30),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet<void>(
+                                      isScrollControlled: true,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Container(
+                                          height: size.height * 0.89,
+                                          color: const Color(0xff262626),
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 17, right: 17),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    TextButton(
+                                                      onPressed: () {},
+                                                      child: Text(
+                                                        "history",
+                                                        style: kTextStyle(
+                                                          size: 18,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: const Color(
+                                                              0xffFF0000),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Hive.box(
+                                                                'calculatorBest')
+                                                            .clear();
+                                                        hiveList.clear();
+                                                        hiveMap.clear();
+                                                      },
+                                                      child: const Icon(
+                                                        CupertinoIcons
+                                                            .delete_simple,
+                                                        size: 35,
+                                                        color:
+                                                            Color(0xffFF0000),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
+                                              Container(
+                                                width: double.infinity,
+                                                height: size.height * 0.775,
+                                                decoration: const BoxDecoration(
+                                                  color: Color(0xff262626),
+                                                  border: Border(
+                                                    top: BorderSide(
+                                                      width: 1,
+                                                      color: Color(0xffFF0000),
+                                                    ),
+                                                    bottom: BorderSide(
+                                                      width: 1,
+                                                      color: Color(0xffFF0000),
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: ListView.builder(
+                                                  itemCount: hiveList?.length,
+                                                  itemBuilder:
+                                                      ((BuildContext context,
+                                                          int index) {
+                                                    return Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      width: double.infinity,
+                                                      height: 100,
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.black,
+                                                          border: Border.all(
+                                                              width: 2,
+                                                              color:
+                                                                  Colors.red)),
+                                                      child: ListTile(
+                                                        leading: InkWell(
+                                                          onTap: () {
+                                                            hiveList.removeAt(
+                                                                index);
+                                                            hiveMap.removeAt(
+                                                                index);
+                                                          },
+                                                          child: const Icon(
+                                                            CupertinoIcons
+                                                                .delete,
+                                                            color: Colors.red,
+                                                            size: 25,
+                                                          ),
+                                                        ),
+                                                        title: Text(
+                                                          "${hiveMap[index]}",
+                                                          style: kTextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 20),
+                                                        ),
+                                                        subtitle: Text(
+                                                          "${hiveList[index]}",
+                                                          style: kTextStyle(
+                                                              color: Colors.red,
+                                                              size: 18),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }),
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () =>
+                                                    Navigator.pop(context),
+                                                child: Container(
+                                                  height: 30,
+                                                  width: double.infinity,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: Color(0xffFF0000),
+                                                  ),
+                                                  child: Image.asset(
+                                                      "assets/parenthesis.png"),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          const Icon(
-                                            CupertinoIcons.delete_simple,
-                                            size: 35,
-                                            color: Color(0xffFF0000),
-                                          ),
-                                        ],
-                                      ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 45,
+                                    height: 45,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: const Color(0xff262626),
+                                      border: Border.all(
+                                          color: textColor, width: 2),
                                     ),
-                                    Container(
-                                      width: double.infinity,
-                                      height: size.height * 0.775,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xff262626),
-                                        border: Border(
-                                          top: BorderSide(
-                                            width: 1,
-                                            color: Color(0xffFF0000),
-                                          ),
-                                          bottom: BorderSide(
-                                            width: 1,
-                                            color: Color(0xffFF0000),
-                                          ),
-                                        ),
-                                      ),
+                                    child: const Icon(
+                                      Icons.restore_rounded,
+                                      size: 33,
+                                      color: Color(0xffBBBBBB),
                                     ),
-                                    GestureDetector(
-                                      onTap: () => Navigator.pop(context),
-                                      child: Container(
-                                        height: 30,
-                                        width: double.infinity,
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xffFF0000),
-                                        ),
-                                        child: Image.asset(
-                                            "assets/parenthesis.png"),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              );
-                            },
-                          );
-                        },
-                        child: Container(
-                          width: 45,
-                          height: 45,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: const Color(0xff262626),
-                            border: Border.all(color: textColor, width: 2),
+                              ),
+                                ],
+                              ),
+                              
+                            ],
                           ),
-                          child: const Icon(
-                            Icons.restore_rounded,
-                            size: 33,
-                            color: Color(0xffBBBBBB),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 10, bottom: size.height * 0.04),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16, left: 16),
+                          child: TextField(
+                            controller: calculateController,
+                            maxLines: 1,
+                            style: kTextStyle(
+                                fontWeight: FontWeight.w400, size: 28),
+                            textAlign: TextAlign.end,
+                            readOnly: true,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: '',
+                              hintStyle: TextStyle(
+                                  fontSize: 28,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 14),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16, left: 16),
+                          child: TextField(
+                            maxLines: 1,
+                            controller: resultController,
+                            style: kTextStyle(
+                                fontWeight: FontWeight.w700, size: 28),
+                            textAlign: TextAlign.end,
+                            readOnly: true,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: '',
+                              hintStyle: TextStyle(
+                                  fontSize: 40, fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Align(
+                      alignment: const Alignment(1, 1),
+                      child: Transform.translate(
+                        offset: const Offset(20, -10),
+                        child: AnimatedScale(
+                          duration: const Duration(milliseconds: 500),
+                          scale: animCricleClear,
+                          child: Container(
+                            // alignment: Alignment.topRight,
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                color: Colors.white),
                           ),
                         ),
                       ),
@@ -359,166 +648,115 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                   ],
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 10, bottom: size.height * 0.04),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 16, left: 16),
-                child: TextField(
-                  controller: calculateController,
-                  maxLines: 1,
-                  style: kTextStyle(fontWeight: FontWeight.w400, size: 28),
-                  textAlign: TextAlign.end,
-                  readOnly: true,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: '',
-                    hintStyle: TextStyle(
-                        fontSize: 28,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w400),
-                  ),
+              Container(
+                height: size.height / 2.1,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: containerColor,
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 14),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 16, left: 16),
-                child: TextField(
-                  maxLines: 1,
-                  controller: resultController,
-                  style: kTextStyle(fontWeight: FontWeight.w700, size: 28),
-                  textAlign: TextAlign.end,
-                  readOnly: true,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: '',
-                    hintStyle:
-                        TextStyle(fontSize: 40, fontWeight: FontWeight.w700),
-                  ),
-                ),
-              ),
-              GridView.count(
-                padding: const EdgeInsets.only(top: 4),
-                controller: scrollConrtoller,
-                physics: const BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics()),
-                shrinkWrap: true,
-                crossAxisSpacing: 1,
-                mainAxisSpacing: 1.04,
-                childAspectRatio: size.height * 0.0024,
-                crossAxisCount: 4,
-                primary: false,
-                children: [
-                  _itemContanier(
-                    "xⁿ",
-                    menuText1,
-                    const Color(0xff161616),
-                  ),
-                  _itemContanier(
-                    "%",
-                    menuText1,
-                    const Color(0xff161616),
-                  ),
-                  _itemContanier(
-                    "/",
-                    menuText1,
-                    const Color(0xff161616),
-                  ),
-                  GestureDetector(
-                    onLongPress: () {
-                      setState(() {
-                        calculateController.text = "";
-                        resultController.text = "";
-                      });
-                    },
-                    child: _itemContanier(
-                      "del",
+                child: GridView.count(
+                  padding:
+                      EdgeInsets.only(top: 4, left: leftGra, right: rightGra),
+                  controller: scrollConrtoller,
+                  physics: const BouncingScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics()),
+                  shrinkWrap: true,
+                  crossAxisSpacing: widthGridViewCross,
+                  mainAxisSpacing: heightGridViewMain,
+                  childAspectRatio: size.height * 0.0024,
+                  crossAxisCount: 4,
+                  primary: false,
+                  children: [
+                    _itemContanierMainButton(
+                      "xⁿ",
                       menuText1,
-                      const Color(0xff161616),
                     ),
-                  ),
-                  _itemContanier(
-                    "7",
-                    textColor,
-                    containerColor,
-                  ),
-                  _itemContanier(
-                    "8",
-                    textColor,
-                    containerColor,
-                  ),
-                  _itemContanier(
-                    "9",
-                    textColor,
-                    containerColor,
-                  ),
-                  _itemContanier(
-                    "x",
-                    menuText1,
-                    const Color(0xff161616),
-                  ),
-                  _itemContanier(
-                    "4",
-                    textColor,
-                    containerColor,
-                  ),
-                  _itemContanier(
-                    "5",
-                    textColor,
-                    containerColor,
-                  ),
-                  _itemContanier(
-                    "6",
-                    textColor,
-                    containerColor,
-                  ),
-                  _itemContanier(
-                    "-",
-                    menuText1,
-                    const Color(0xff161616),
-                  ),
-                  _itemContanier(
-                    "1",
-                    textColor,
-                    containerColor,
-                  ),
-                  _itemContanier(
-                    "2",
-                    textColor,
-                    containerColor,
-                  ),
-                  _itemContanier(
-                    "3",
-                    textColor,
-                    containerColor,
-                  ),
-                  _itemContanier(
-                    "+",
-                    menuText1,
-                    const Color(0xff161616),
-                  ),
-                  _itemContanier(".", textColor, containerColor),
-                  _itemContanier(
-                    "0",
-                    textColor,
-                    containerColor,
-                  ),
-                  _itemContanier(
-                    "( )",
-                    const Color(
-                      0xffBBBBBB,
+                    _itemContanierMainButton(
+                      "%",
+                      menuText1,
                     ),
-                    containerColor,
-                  ),
-                  _itemContanier(
-                    "=",
-                    menuText1,
-                    const Color(0xff161616),
-                  ),
-                ],
+                    _itemContanierMainButton(
+                      "/",
+                      menuText1,
+                    ),
+                    GestureDetector(
+                      onLongPress: () {
+                        setState(() {
+                          calculateController.text = "";
+                          resultController.text = "";
+                        });
+                      },
+                      child: _itemContanierMainButton(
+                        "del",
+                        menuText1,
+                      ),
+                    ),
+                    _itemContanier(
+                      "7",
+                      textColor,
+                    ),
+                    _itemContanier(
+                      "8",
+                      textColor,
+                    ),
+                    _itemContanier(
+                      "9",
+                      textColor,
+                    ),
+                    _itemContanierMainButton(
+                      "x",
+                      menuText1,
+                    ),
+                    _itemContanier(
+                      "4",
+                      textColor,
+                    ),
+                    _itemContanier(
+                      "5",
+                      textColor,
+                    ),
+                    _itemContanier(
+                      "6",
+                      textColor,
+                    ),
+                    _itemContanierMainButton(
+                      "-",
+                      menuText1,
+                    ),
+                    _itemContanier(
+                      "1",
+                      textColor,
+                    ),
+                    _itemContanier(
+                      "2",
+                      textColor,
+                    ),
+                    _itemContanier(
+                      "3",
+                      textColor,
+                    ),
+                    _itemContanierMainButton(
+                      "+",
+                      menuText1,
+                    ),
+                    _itemContanier(
+                      ".",
+                      textColor,
+                    ),
+                    _itemContanier(
+                      "0",
+                      textColor,
+                    ),
+                    _itemContanier(
+                      "( )",
+                      textColor,
+                    ),
+                    _itemContanierMainButton(
+                      "=",
+                      menuText1,
+                    ),
+                  ],
+                ),
               ),
               InkWell(
                 onTap: () {
@@ -724,7 +962,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
     );
   }
 
-  Widget _itemContanier(String text, Color colors, Color contanierColor) {
+  Widget _itemContanier(String text, Color colors) {
     return scaleWidget(
       onTap: () {
         writer(text);
@@ -734,15 +972,26 @@ class _BestClaculatePageState extends State<BestClaculatePage>
         alignment: Alignment.center,
         width: 102,
         height: 78.17,
-        decoration: BoxDecoration(
-          color: contanierColor,
-          border: const Border(
-            top: BorderSide(
-              color: Color(0xff5A5A5A),
-              width: 1,
-            ),
-          ),
+        decoration: decoration,
+        child: Text(
+          text,
+          style: kTextStyle(size: 28, color: colors),
         ),
+      ),
+    );
+  }
+
+  Widget _itemContanierMainButton(String text, Color colors) {
+    return scaleWidget(
+      onTap: () {
+        writer(text);
+      },
+      scale: 0.8,
+      child: Container(
+        alignment: Alignment.center,
+        width: 102,
+        height: 78.17,
+        decoration: decorationMain,
         child: Text(
           text,
           style: kTextStyle(size: 28, color: colors),
@@ -796,7 +1045,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
       pause: const Duration(milliseconds: 600),
       stopPauseOnTap: true,
       animatedTexts: [
-        ColorizeAnimatedText(controller() ?? "",
+        ColorizeAnimatedText(controller(),
             textStyle: colorizeTextStyle, colors: colorizeColors),
       ],
       totalRepeatCount: 1,

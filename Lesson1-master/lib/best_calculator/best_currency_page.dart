@@ -36,6 +36,10 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
     if (text == "C") {
       _editingControllerTop.text = "";
     } else if (text == "⌫") {
+      if (_editingControllerTop.text.length >= 1) {
+        _editingControllerTop.text = _editingControllerTop.text
+            .substring(0, _editingControllerTop.text.length - 1);
+      } else {}
     } else if (text == '.') {
       if (!_editingControllerTop.text.contains(".")) {
         _editingControllerTop.text += text;
@@ -50,18 +54,16 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
   void initState() {
     super.initState();
     _editingControllerTop.addListener(() {
-      if (_topFocus.hasFocus) {
-        setState(() {
-          if (_editingControllerTop.text.isNotEmpty) {
-            double sum = double.parse(topCur?.rate ?? '0') /
-                double.parse(bottomCur?.rate ?? '0') *
-                double.parse(_editingControllerTop.text);
-            _editingControllerBottom.text = sum.toStringAsFixed(2);
-          } else {
-            _editingControllerBottom.clear();
-          }
-        });
-      }
+      setState(() {
+        if (_editingControllerTop.text.isNotEmpty) {
+          double sum = double.parse(topCur?.rate ?? '0') /
+              double.parse(bottomCur?.rate ?? '0') *
+              double.parse(_editingControllerTop.text);
+          _editingControllerBottom.text = sum.toStringAsFixed(2);
+        } else {
+          _editingControllerBottom.clear();
+        }
+      });
     });
     _editingControllerBottom.addListener(() {
       if (_bottomFocus.hasFocus) {
@@ -318,9 +320,9 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
                           width: 90.89,
                           height: 79,
                           alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            color: Color(0xff161616),
-                            border: Border(
+                          decoration:  BoxDecoration(
+                            color: currencyButtonColor,
+                            border: const Border(
                               top: BorderSide(
                                 color: Color(0xff54617F),
                                 width: 1,
@@ -374,15 +376,17 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
                         const Color(0xffDADADA),
                       ),
                       scaleWidget(
-                        onTap: () {},
+                        onTap: () {
+                          _editingControllerTop.text += "00";
+                        },
                         scale: 0.8,
                         child: Container(
                           width: 90.89 * 2,
                           height: 79,
                           alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            color: Color(0xff161616),
-                            border: Border(
+                          decoration: BoxDecoration(
+                            color: currencyButtonColor,
+                            border: const Border(
                               top: BorderSide(
                                 color: Color(0xff54617F),
                                 width: 1,
@@ -488,19 +492,7 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
         width: 90.89,
         height: 79,
         alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          color: Color(0xff161616),
-          border: Border(
-            top: BorderSide(
-              color: Color(0xff54617F),
-              width: 1,
-            ),
-            right: BorderSide(
-              color: Color(0xff54617F),
-              width: 1,
-            ),
-          ),
-        ),
+        decoration: decorationCurVal,
         child: Text(
           textCur,
           style: kTextStyle(

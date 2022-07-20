@@ -45,10 +45,7 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
   };
   var ab;
 
-  List<Color> lisColor = [
-    const Color(0xff262626),
-    const Color(0xff161616),
-  ];
+  List<Color> listColor = [distanceColor1, distanceColor2];
 
   final controllerDistance = TextEditingController();
   final textTop = TextEditingController();
@@ -159,7 +156,7 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
                                         context,
                                         "${listMap.values.elementAt(index)}",
                                         "${listMap.keys.elementAt(index)}",
-                                        lisColor[index % 2],
+                                        listColor[index % 2],
                                         icon: textTop.text ==
                                                 "${listMap.values.elementAt(index)}"
                                             ? const Icon(
@@ -393,7 +390,7 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
                   return Container();
                 } else {
                   return _itemMeasurementsContanier(
-                    lisColor[index % 2],
+                    listColor[index % 2],
                     '${listMap.values.elementAt(index)}',
                     "${listMap.keys.elementAt(index)}",
                     "${distance(listMap.keys.elementAt(index))}",
@@ -419,15 +416,7 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
         width: 95,
         height: 81,
         alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          color: Color(0xff161616),
-          border: Border(
-            top: BorderSide(
-              color: Color(0xff5A5A5A),
-              width: 1,
-            ),
-          ),
-        ),
+        decoration: decorationCurVal,
         child: Text(
           text,
           style: kTextStyle(
