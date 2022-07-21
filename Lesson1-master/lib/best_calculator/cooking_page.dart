@@ -130,8 +130,8 @@ class _MyWidgetCookingState extends State<MyWidgetCooking>
             // alignment: Alignment.bottomLeft,
             width: double.infinity,
             height: size.height / 4,
-            decoration: const BoxDecoration(
-              color: Color(0Xff161616),
+            decoration:  BoxDecoration(
+              color: valumePage,
             ),
             child: Padding(
               padding: const EdgeInsets.only(left: 13, right: 17),
@@ -387,9 +387,7 @@ class _MyWidgetCookingState extends State<MyWidgetCooking>
           Container(
             width: double.infinity,
             height: size.height - 307,
-            decoration: const BoxDecoration(
-              color: Color(0xff161616),
-            ),
+            decoration: BoxDecoration(color: valumePage,),
             child: ListView.builder(
               itemCount: listMapArea.length,
               itemBuilder: (BuildContext context, int index) {
@@ -458,7 +456,7 @@ class _MyWidgetCookingState extends State<MyWidgetCooking>
             text1,
             style: kTextStyle(
               size: 12,
-              color: const Color(0xffDADADA),
+              color: menuText1,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -466,7 +464,7 @@ class _MyWidgetCookingState extends State<MyWidgetCooking>
             text2,
             style: kTextStyle(
               size: 24,
-              color: const Color(0xffDADADA),
+              color: menuText1,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -498,7 +496,7 @@ class _MyWidgetCookingState extends State<MyWidgetCooking>
       text,
       style: kTextStyle(
           size: sizes,
-          color: const Color(0xffDADADA),
+          color: menuText1,
           fontWeight: FontWeight.w400),
     );
   }

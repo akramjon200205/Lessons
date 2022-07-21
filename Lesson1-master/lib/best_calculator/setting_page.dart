@@ -4,6 +4,10 @@ import 'package:flutter/src/animation/animation_controller.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/ticker_provider.dart';
+import 'package:lesson1/best_calculator/about.dart';
+import 'package:lesson1/best_calculator/change_theme.dart';
+import 'package:lesson1/best_calculator/page.dart';
+import 'package:lesson1/main.dart';
 import 'package:lesson1/utils/constants.dart';
 
 class SettingPage extends StatefulWidget {
@@ -13,27 +17,28 @@ class SettingPage extends StatefulWidget {
   State<SettingPage> createState() => _SettingPageState();
 }
 
-var controller3 = "";
+// var controller3 = "";
 
-String controller() {
-  var string1 = controller3.toString();
-  return string1;
-}
+// String controller() {
+//   var string1 = controller3.toString();
+//   return string1;
+// }
 
 class _SettingPageState extends State<SettingPage>
     with TickerProviderStateMixin {
   late TabController _tabController1;
   final controller1 = TextEditingController();
-  bool _switchValue1 = true;
+  bool _switchValue1 = false;
   bool _switchValue2 = true;
   bool _switchValue3 = true;
-  bool _switchValue4 = true;
+  bool _switchValue4 = false;
   bool _switchValue5 = true;
-  bool _switchValue6 = true;
+  bool _switchValue6 = false; 
 
   @override
   void initState() {
     super.initState();
+
     _tabController1 = TabController(length: 2, vsync: this);
     controller1.addListener(() {
       setState(() {});
@@ -76,6 +81,7 @@ class _SettingPageState extends State<SettingPage>
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     const Padding(
                       padding: EdgeInsets.only(top: 20),
@@ -106,9 +112,18 @@ class _SettingPageState extends State<SettingPage>
                           ),
                           child: GestureDetector(
                             onTap: () {
-                              setState(() {
-                                controller3 = controller1.text;
-                              });
+                              setState(
+                                () {
+                                  // controller3 = controller1.text;
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          BestClaculatePage(controller1.text),
+                                    ),
+                                  );
+                                },
+                              );
                             },
                             child: Container(
                               alignment: Alignment.center,
@@ -176,9 +191,16 @@ class _SettingPageState extends State<SettingPage>
                         scale: 0.7,
                         child: CupertinoSwitch(
                           value: _switchValue3,
-                          onChanged: (bool value) {
+                          onChanged: (bool value) async {
                             setState(() {
                               _switchValue3 = value;
+                              print(box1.values.first);
+                              box1.put('_switchValue3', _switchValue3);
+                              // box1.delete('_switchValue3');
+                              // print(box1.get('_switchValue3'));
+                              // print(box1.keys);
+                              // _switchValue3 = box1.values.first;
+                              print(box1.values.first);
                             });
                           },
                         ),
@@ -242,7 +264,12 @@ class _SettingPageState extends State<SettingPage>
                     ),
                     Center(
                       child: TextButton.icon(
-                        onPressed: () {},
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const About(),
+                          ),
+                        ),
                         icon: Container(
                           width: 25,
                           height: 25,
@@ -287,19 +314,22 @@ class _SettingPageState extends State<SettingPage>
                     const SizedBox(
                       height: 20,
                     ),
-                    _itemPage("calcualtor_fragment_1", "calcualtor_fragment_2"),
+                    _itemPage(
+                        "calcualtor_fragment_1", "calcualtor_fragment_2", 1),
                     const SizedBox(
                       height: 20,
                     ),
-                    _itemPage("calcualtor_fragment_3", "calcualtor_fragment_4"),
+                    _itemPage(
+                        "calcualtor_fragment_3", "calcualtor_fragment_4", 3),
                     const SizedBox(
                       height: 20,
                     ),
-                    _itemPage("calculator_fragment_5", "calcualtor_fragment_6"),
+                    _itemPage(
+                        "calculator_fragment_5", "calcualtor_fragment_6", 5),
                     const SizedBox(
                       height: 20,
                     ),
-                    _itemPage("google_pixel_2", "xalcualtor_fragment"),
+                    _itemPage("google_pixel_2", "xalcualtor_fragment", 7),
                     const SizedBox(
                       height: 20,
                     ),
@@ -313,19 +343,31 @@ class _SettingPageState extends State<SettingPage>
     );
   }
 
-  Row _itemPage(String text, String text2) {
+  Row _itemPage(String text, String text2, int number) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Image.asset(
-          "assets/$text.png",
-          width: 150,
-          height: 220,
+        InkWell(
+          onTap: () {
+            changeTheme(number);
+            setState(() {});
+          },
+          child: Image.asset(
+            "assets/$text.png",
+            width: 150,
+            height: 220,
+          ),
         ),
-        Image.asset(
-          "assets/$text2.png",
-          width: 150,
-          height: 220,
+        GestureDetector(
+          onTap: () {
+            changeTheme(number + 1);
+            setState(() {});
+          },
+          child: Image.asset(
+            "assets/$text2.png",
+            width: 150,
+            height: 220,
+          ),
         ),
       ],
     );

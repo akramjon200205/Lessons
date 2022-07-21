@@ -43,9 +43,9 @@ class _MyWidgetAreaState extends State<MyWidgetArea>
 
   final controllerDistance = TextEditingController();
   final _textTop = TextEditingController();
-  final _textButtom = TextEditingController();  
-  final _measurements = TextEditingController();  
-  double sizeText = 38;  
+  final _textButtom = TextEditingController();
+  final _measurements = TextEditingController();
+  double sizeText = 38;
 
   late Widget onclick;
   bool oncliked = true;
@@ -120,8 +120,8 @@ class _MyWidgetAreaState extends State<MyWidgetArea>
             // alignment: Alignment.bottomLeft,
             width: double.infinity,
             height: size.height / 4,
-            decoration: const BoxDecoration(
-              color: Color(0Xff161616),
+            decoration: BoxDecoration(
+              color: valumePage,
             ),
             child: Padding(
               padding: const EdgeInsets.only(left: 13, right: 17),
@@ -188,7 +188,7 @@ class _MyWidgetAreaState extends State<MyWidgetArea>
                                 ),
                               ],
                             ),
-                           Icon(
+                            Icon(
                               Icons.keyboard_arrow_down,
                               color: menuText1,
                               size: 35,
@@ -328,6 +328,7 @@ class _MyWidgetAreaState extends State<MyWidgetArea>
                                         GestureDetector(
                                           onTap: () {
                                             Navigator.pop(context);
+                                            // _measurements.text = "";
                                           },
                                           child: Container(
                                             width: 95,
@@ -374,9 +375,12 @@ class _MyWidgetAreaState extends State<MyWidgetArea>
               ),
             ),
           ),
-          SizedBox(
+          Container(
             width: double.infinity,
             height: size.height - 307,
+            decoration: BoxDecoration(
+              color: valumePage,
+            ),
             child: ListView.builder(
               itemCount: listMapArea.length,
               itemBuilder: (BuildContext context, int index) {
@@ -445,7 +449,7 @@ class _MyWidgetAreaState extends State<MyWidgetArea>
             text1,
             style: kTextStyle(
               size: 12,
-              color: const Color(0xffDADADA),
+              color: menuText1,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -453,7 +457,7 @@ class _MyWidgetAreaState extends State<MyWidgetArea>
             text2,
             style: kTextStyle(
               size: 24,
-              color: const Color(0xffDADADA),
+              color: menuText1,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -484,9 +488,7 @@ class _MyWidgetAreaState extends State<MyWidgetArea>
     return Text(
       text,
       style: kTextStyle(
-          size: sizes,
-          color: const Color(0xffDADADA),
-          fontWeight: FontWeight.w400),
+          size: sizes, color: menuText1, fontWeight: FontWeight.w400),
     );
   }
 }

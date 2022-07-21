@@ -167,7 +167,7 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: const Color(0xff434343),
+      backgroundColor: backgroundColor2,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 29),
@@ -265,7 +265,7 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
                   }
                 }),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 30),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -274,15 +274,15 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
                     children: [
                       _itemButtonCurrency(
                         "7",
-                        const Color(0xffDADADA),
+                        textColor,
                       ),
                       _itemButtonCurrency(
                         "8",
-                        const Color(0xffDADADA),
+                        textColor,
                       ),
                       _itemButtonCurrency(
                         "9",
-                        const Color(0xffDADADA),
+                        textColor,
                       ),
                       _itemButtonCurrency(
                         "⌫",
@@ -295,15 +295,15 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
                     children: [
                       _itemButtonCurrency(
                         "4",
-                        const Color(0xffDADADA),
+                        textColor,
                       ),
                       _itemButtonCurrency(
                         "5",
-                        const Color(0xffDADADA),
+                        textColor,
                       ),
                       _itemButtonCurrency(
                         "6",
-                        const Color(0xffDADADA),
+                        textColor,
                       ),
                       scaleWidget(
                         onTap: () {
@@ -316,28 +316,19 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
                           });
                         },
                         scale: 0.8,
-                        child: Container(
-                          width: 90.89,
-                          height: 79,
-                          alignment: Alignment.center,
-                          decoration:  BoxDecoration(
-                            color: currencyButtonColor,
-                            border: const Border(
-                              top: BorderSide(
-                                color: Color(0xff54617F),
-                                width: 1,
-                              ),
-                              right: BorderSide(
-                                color: Color(0xff54617F),
-                                width: 1,
-                              ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(0.5),
+                          child: Container(
+                            width: 90.89,
+                            height: 79,
+                            alignment: Alignment.center,
+                            decoration: decorationCurVal,
+                            child: Image.asset(
+                              'assets/down_top.png',
+                              width: 25.19,
+                              height: 49.84,
+                              color: menuText1,
                             ),
-                          ),
-                          child: Image.asset(
-                            'assets/down_top.png',
-                            width: 25.19,
-                            height: 49.84,
-                            color: menuText1,
                           ),
                         ),
                       ),
@@ -348,19 +339,19 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
                     children: [
                       _itemButtonCurrency(
                         "1",
-                        const Color(0xffDADADA),
+                        textColor,
                       ),
                       _itemButtonCurrency(
                         "2",
-                        const Color(0xffDADADA),
+                        textColor,
                       ),
                       _itemButtonCurrency(
                         "3",
-                        const Color(0xffDADADA),
+                        textColor,
                       ),
                       _itemButtonCurrency(
                         "C",
-                        const Color(0xffFF0000),
+                        textColor,
                       ),
                     ],
                   ),
@@ -369,40 +360,31 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
                     children: [
                       _itemButtonCurrency(
                         ".",
-                        const Color(0xffDADADA),
+                        textColor,
                       ),
                       _itemButtonCurrency(
                         "0",
-                        const Color(0xffDADADA),
+                        textColor,
                       ),
                       scaleWidget(
                         onTap: () {
                           _editingControllerTop.text += "00";
                         },
                         scale: 0.8,
-                        child: Container(
-                          width: 90.89 * 2,
-                          height: 79,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: currencyButtonColor,
-                            border: const Border(
-                              top: BorderSide(
-                                color: Color(0xff54617F),
-                                width: 1,
-                              ),
-                              right: BorderSide(
-                                color: Color(0xff54617F),
-                                width: 1,
-                              ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(1.0),
+                          child: Container(
+                            width: 91.4 * 2,
+                            height: 79,
+                            alignment: Alignment.center,
+                            decoration: decorationCurVal,
+                            child: Text(
+                              "00",
+                              style: kTextStyle(
+                                  size: 28,
+                                  color: textColor,
+                                  fontWeight: FontWeight.w400),
                             ),
-                          ),
-                          child: Text(
-                            "00",
-                            style: kTextStyle(
-                                size: 28,
-                                color: const Color(0xffDADADA),
-                                fontWeight: FontWeight.w400),
                           ),
                         ),
                       ),
@@ -488,15 +470,18 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
         });
       },
       scale: 0.8,
-      child: Container(
-        width: 90.89,
-        height: 79,
-        alignment: Alignment.center,
-        decoration: decorationCurVal,
-        child: Text(
-          textCur,
-          style: kTextStyle(
-              size: 28, color: colorCur, fontWeight: FontWeight.w400),
+      child: Padding(
+        padding: const EdgeInsets.all(0.5),
+        child: Container(
+          width: 90.89,
+          height: 79,
+          alignment: Alignment.center,
+          decoration: decorationCurVal,
+          child: Text(
+            textCur,
+            style: kTextStyle(
+                size: 28, color: colorCur, fontWeight: FontWeight.w400),
+          ),
         ),
       ),
     );

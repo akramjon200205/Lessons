@@ -22,48 +22,58 @@ import 'package:lesson1/widgets/scale_widget.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'about.dart';
 import 'cooking_page.dart';
 import 'distance.dart';
 
 class BestClaculatePage extends StatefulWidget {
-  const BestClaculatePage({Key? key}) : super(key: key);
+  BestClaculatePage(this.bestController, {Key? key}) : super(key: key);
+  String bestController;
 
   @override
-  State<BestClaculatePage> createState() => _BestClaculatePageState();
+  State<BestClaculatePage> createState() =>
+      _BestClaculatePageState(bestController);
 }
 
 class _BestClaculatePageState extends State<BestClaculatePage>
     with TickerProviderStateMixin, HiveUtil, CalculatorUtils {
+  _BestClaculatePageState(this.bestController1);
+
+  var scrollConrtoller = ScrollController();
+
   late TabController _tabController;
   late TabController _tabController1;
-  final _bestController = TextEditingController(); // controller = output
+  late List hiveMap;
+  late List hiveList;
+
   final _bestResultController = TextEditingController(); //
   final TextEditingController _editingControllerTop = TextEditingController();
   final TextEditingController _editingControllerBottom =
       TextEditingController();
   final FocusNode _topFocus = FocusNode();
   final FocusNode _bottomFocus = FocusNode();
-  List<BestCurrencyModel> _listCurrency = [];
-  BestCurrencyModel? topCur;
-  BestCurrencyModel? bottomCur;
-  var scrollConrtoller = ScrollController();
-  static ValueNotifier<String> enteredValue = ValueNotifier("");
-
-  late List hiveMap;
-  late List hiveList;
 
   bool click = false;
   bool isPage1 = false;
   bool isPage2 = false;
   bool isPage3 = false;
+
+  String bestController1;
+  String expression = "";
+
   double animCricleClear = 0;
 
-  String expression = "";
+  List<BestCurrencyModel> _listCurrency = [];
+  BestCurrencyModel? topCur;
+  BestCurrencyModel? bottomCur;
 
   @override
   void initState() {
     super.initState();
     scrollConrtoller = ScrollController();
+    hiveMap = [];
+
+    hiveList = [];
 
     // scrollConrtoller.addListener(() {
     //   if (scrollConrtoller.position.userScrollDirection ==
@@ -83,7 +93,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
       animCricleClear = 20;
       setState(() {});
 
-      Timer(Duration(milliseconds: 1), () async {
+      Timer(Duration(milliseconds: 1000), () async {
         animCricleClear = 0;
         setState(() {});
       });
@@ -121,13 +131,13 @@ class _BestClaculatePageState extends State<BestClaculatePage>
     });
   }
 
-  writer(String command) async {
-    if (command == 'C') {
+  writer(String text) async {
+    if (text == 'C') {
       calculateController.text = '';
       resultController.text = '';
       topFieldSize = 35;
       bottomFieldSize = 45;
-    } else if (command == 'del') {
+    } else if (text == 'del') {
       if (calculateController.text.isNotEmpty) {
         calculateController.text = calculateController.text
             .substring(0, calculateController.text.length - 1);
@@ -136,18 +146,17 @@ class _BestClaculatePageState extends State<BestClaculatePage>
           resultController.text = "=$res";
         }
       }
-    } else if (command == '=') {
+    } else if (text == '=') {
       if (resultController.text.isEmpty) {}
       if (resultController.text.isNotEmpty) {
         box.put("${resultController.text}", ["${calculateController.text}"]);
-
         hiveMap = box.values.toList();
         hiveList = box.keys.toList();
         print(box.get("${resultController.text}"));
         calculateController.text = resultController.text.substring(1);
         resultController.text = '';
       } else {}
-    } else if (command == '+/-') {
+    } else if (text == '+/-') {
       if (resultController.text.length > 1) {
         if (resultController.text.contains('-')) {
           resultController.text = '=${resultController.text.substring(2)}';
@@ -155,7 +164,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
           resultController.text = '=-${resultController.text.substring(1)}';
         }
       }
-    } else if (command == '%') {
+    } else if (text == '%') {
       if (calculateController.text.isNotEmpty) {
         var last = splitter(calculateController.text);
 
@@ -167,28 +176,42 @@ class _BestClaculatePageState extends State<BestClaculatePage>
           resultController.text = "=$res";
         }
       }
-    } else if (command == '/' ||
-        command == '*' ||
-        command == '+' ||
-        command == '-') {
-      lastOperator = command;
+    } else if (text == '/' || text == '*' || text == '+' || text == '-') {
+      lastOperator = text;
       if (calculateController.text.isNotEmpty &&
           !isOperator(
               calculateController.text[calculateController.text.length - 1])) {
-        calculateController.text += command;
+        calculateController.text += text;
         var res = calculate(calculateController.text);
         if (res != null) {
           resultController.text = "=$res";
         }
       }
-    } else if (command == '.') {
+    }
+    // else if(text == 'sinh') {
+    //   sinh(num )
+    // } else if () {
+
+    // }
+    else if (text == 'x⁻¹') {
+      if (calculateController.text.isNotEmpty) {
+        calculateController.text =
+            (1 / double.parse(calculateController.text)).toString();
+
+        var res = calculateController.text.toString().contains('.')
+            ? double.parse(calculateController.text).toStringAsFixed(3)
+            : calculateController.text.toString();
+
+        resultController.text = "=$res";
+      }
+    } else if (text == '.') {
       if (calculateController.text.isNotEmpty &&
           !isOperator(
               calculateController.text[calculateController.text.length - 1])) {
         if (calculateController.text.isNotEmpty) {
           var last = splitter(calculateController.text);
           if (!last.contains('.')) {
-            calculateController.text += command;
+            calculateController.text += text;
             var res = calculate(calculateController.text);
             if (res != null) {
               resultController.text = "=$res";
@@ -196,15 +219,15 @@ class _BestClaculatePageState extends State<BestClaculatePage>
           }
         }
       }
-    } else if (command == "xⁿ") {
+    } else if (text == "xⁿ") {
       calculateController.text += "^";
     } else {
       if (resultController.text.isEmpty &&
           calculateController.text.isNotEmpty) {
-        calculateController.text = command;
-        resultController.text = command;
+        calculateController.text = text;
+        resultController.text = text;
       } else {
-        calculateController.text += command;
+        calculateController.text += text;
         if (!calculateController.text.contains("^")) {
         } else {
           var last = splitter(calculateController.text);
@@ -221,22 +244,6 @@ class _BestClaculatePageState extends State<BestClaculatePage>
       }
     }
   }
-
-  // void _saveNumber() async {
-  //   final SharedPreferences prefs = await _prefs;
-  //   prefs.setString('savedNumber', calculateController.text);
-  //   setState(() {
-  //     _savedNumber = _randomNumber;
-  //   });
-  // }
-
-  // void _loadNumber() async {
-  //   final SharedPreferences prefs = await _prefs;
-  //   final savedNumber = prefs.getInt('savedNumber') ?? 0;
-  //   setState(() {
-  //     _randomNumber = savedNumber.toDouble();
-  //   });
-  // }
 
   @override
   void dispose() {
@@ -269,6 +276,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
       key: scaffoldKey,
       backgroundColor: backgroundColor2,
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: appBarColor,
         leading: GestureDetector(
           onTap: () => scaffoldKey.currentState?.openDrawer(),
@@ -402,7 +410,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
+              SizedBox(
                 width: double.infinity,
                 height: size.height / 3,
                 child: Stack(
@@ -411,17 +419,25 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 15, right: 15),
-                          child: Row(                            
-                            mainAxisAlignment: MainAxisAlignment.end,
+                          child: Stack(
                             children: [
-                              Stack(
-                                children: [
-                                  Container(
-                                  alignment: Alignment.center,
-                                  width: size.width * 0.68,
-                                  child: colorizeAnimation()),
+                              // box1.values.first == 'true'
+                              //     ?
                               Padding(
-                                padding: const EdgeInsets.only(left: 30),
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 5),
+                                  alignment: Alignment.bottomCenter,
+                                  width: double.infinity,
+                                  // decoration: BoxDecoration(
+                                  //   color: Colors.white,
+                                  // ),
+                                  child: colorizeAnimation(),
+                                ),
+                              ),
+                              // : const Text(""),
+                              Align(
+                                alignment: Alignment.centerRight,
                                 child: GestureDetector(
                                   onTap: () {
                                     showModalBottomSheet<void>(
@@ -457,8 +473,8 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                                                     GestureDetector(
                                                       onTap: () {
                                                         Hive.box(
-                                                                'calculatorBest')
-                                                            .clear();
+                                                          'calculatorBest',
+                                                        ).clear();
                                                         hiveList.clear();
                                                         hiveMap.clear();
                                                       },
@@ -512,6 +528,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                                                                 index);
                                                             hiveMap.removeAt(
                                                                 index);
+                                                            box.deleteAt(index);
                                                           },
                                                           child: const Icon(
                                                             CupertinoIcons
@@ -575,9 +592,6 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                                   ),
                                 ),
                               ),
-                                ],
-                              ),
-                              
                             ],
                           ),
                         ),
@@ -639,8 +653,9 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                             height: 50,
                             width: 50,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                color: Colors.white),
+                              borderRadius: BorderRadius.circular(25),
+                              color: const Color(0xffFF0000),
+                            ),
                           ),
                         ),
                       ),
@@ -681,12 +696,19 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                     ),
                     GestureDetector(
                       onLongPress: () {
+                        animCricleClear = 20;
+                        setState(() {});
+
+                        Timer(Duration(milliseconds: 1000), () async {
+                          animCricleClear = 0;
+                          setState(() {});
+                        });
                         setState(() {
                           calculateController.text = "";
                           resultController.text = "";
                         });
                       },
-                      child: _itemContanierMainButton(
+                      child: _itemContanierMainButton1(
                         "del",
                         menuText1,
                       ),
@@ -703,7 +725,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                       "9",
                       textColor,
                     ),
-                    _itemContanierMainButton(
+                    _itemContanierMainButton1(
                       "x",
                       menuText1,
                     ),
@@ -719,7 +741,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                       "6",
                       textColor,
                     ),
-                    _itemContanierMainButton(
+                    _itemContanierMainButton1(
                       "-",
                       menuText1,
                     ),
@@ -735,7 +757,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                       "3",
                       textColor,
                     ),
-                    _itemContanierMainButton(
+                    _itemContanierMainButton1(
                       "+",
                       menuText1,
                     ),
@@ -751,7 +773,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                       "( )",
                       textColor,
                     ),
-                    _itemContanierMainButton(
+                    _itemContanierMainButton1(
                       "=",
                       menuText1,
                     ),
@@ -787,10 +809,10 @@ class _BestClaculatePageState extends State<BestClaculatePage>
           ),
           BestCurrencyPage(),
           Scaffold(
-            backgroundColor: const Color(0xff262626),
+            backgroundColor: valumePage,
             appBar: AppBar(
               elevation: 0,
-              backgroundColor: const Color(0xff161616),
+              backgroundColor: valumePage,
               title: TabBar(
                 controller: _tabController1,
                 isScrollable: true,
@@ -937,26 +959,33 @@ class _BestClaculatePageState extends State<BestClaculatePage>
     );
   }
 
-  Container _itemBottomSheet(String text) {
-    return Container(
-      width: 101,
-      height: 76,
-      alignment: Alignment.center,
-      decoration: const BoxDecoration(
-        color: Color(0xff262626),
-        border: Border(
-          top: BorderSide(
-            color: Color(0xff5A5A5A),
-            width: 1,
+  Widget _itemBottomSheet(String text) {
+    return scaleWidget(
+      onTap: () {
+        setState(() {
+          writer(text);
+        });
+      },
+      child: Container(
+        width: 101,
+        height: 76,
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+          color: Color(0xff262626),
+          border: Border(
+            top: BorderSide(
+              color: Color(0xff5A5A5A),
+              width: 1,
+            ),
           ),
         ),
-      ),
-      child: Text(
-        text,
-        style: kTextStyle(
-          size: 28,
-          color: const Color(0xffDADADA),
-          fontWeight: FontWeight.w300,
+        child: Text(
+          text,
+          style: kTextStyle(
+            size: 28,
+            color: const Color(0xffDADADA),
+            fontWeight: FontWeight.w300,
+          ),
         ),
       ),
     );
@@ -1000,6 +1029,25 @@ class _BestClaculatePageState extends State<BestClaculatePage>
     );
   }
 
+  Widget _itemContanierMainButton1(String text, Color colors) {
+    return scaleWidget(
+      onTap: () {
+        writer(text);
+      },
+      scale: 0.8,
+      child: Container(
+        alignment: Alignment.center,
+        width: 102,
+        height: 78.17,
+        decoration: decorationMain1,
+        child: Text(
+          text,
+          style: kTextStyle(size: 28, color: colors),
+        ),
+      ),
+    );
+  }
+
   Widget _itemPage(String text, String text2, int number) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1033,19 +1081,21 @@ class _BestClaculatePageState extends State<BestClaculatePage>
   Widget colorizeAnimation() {
     const colorizeColors = [
       Color(0xff262626),
-      Colors.grey,
+      Colors.white,
       Color(0xff262626),
-      Colors.grey,
+      Colors.white,
+      Color(0xff262626),
+      Colors.white,
       Color(0xff262626),
     ];
     const colorizeTextStyle = TextStyle(
       fontSize: 22,
     );
     return AnimatedTextKit(
-      pause: const Duration(milliseconds: 600),
+      pause: const Duration(milliseconds: 1000),
       stopPauseOnTap: true,
       animatedTexts: [
-        ColorizeAnimatedText(controller(),
+        ColorizeAnimatedText(bestController1,
             textStyle: colorizeTextStyle, colors: colorizeColors),
       ],
       totalRepeatCount: 1,

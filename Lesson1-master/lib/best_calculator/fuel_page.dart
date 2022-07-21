@@ -114,8 +114,8 @@ class _MyWidgetFuelState extends State<MyWidgetFuel>
             // alignment: Alignment.bottomLeft,
             width: double.infinity,
             height: size.height / 4,
-            decoration: const BoxDecoration(
-              color: Color(0Xff161616),
+            decoration: BoxDecoration(
+              color: valumePage,
             ),
             child: Padding(
               padding: const EdgeInsets.only(left: 13, right: 17),
@@ -371,9 +371,7 @@ class _MyWidgetFuelState extends State<MyWidgetFuel>
           Container(
             width: double.infinity,
             height: size.height - 307,
-            decoration: const BoxDecoration(
-              color: Color(0xff161616),
-            ),
+           decoration: BoxDecoration(color: valumePage,),
             child: ListView.builder(
               itemCount: listMapArea.length,
               itemBuilder: (BuildContext context, int index) {
@@ -442,7 +440,7 @@ class _MyWidgetFuelState extends State<MyWidgetFuel>
             text1,
             style: kTextStyle(
               size: 12,
-              color: const Color(0xffDADADA),
+              color: menuText1,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -450,7 +448,7 @@ class _MyWidgetFuelState extends State<MyWidgetFuel>
             text2,
             style: kTextStyle(
               size: 24,
-              color: const Color(0xffDADADA),
+              color: menuText1,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -482,7 +480,7 @@ class _MyWidgetFuelState extends State<MyWidgetFuel>
       text,
       style: kTextStyle(
           size: sizes,
-          color: const Color(0xffDADADA),
+          color: menuText1,
           fontWeight: FontWeight.w400),
     );
   }

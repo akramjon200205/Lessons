@@ -8,10 +8,13 @@ import 'package:lesson1/value_listenable.dart';
 
 //hive uchun box
 late Box box;
+late Box box1;
+
 void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter<BestCurrencyModel>(BestCurrencyModelAdapter());
-  box = await Hive.openBox("calculatorBest");  
+  box = await Hive.openBox("calculatorBest");
+  box1 = await Hive.openBox("settingsBox");
   // Hive.registerAdapter();
   // Hive.registerAdapter<WeatherModel>(WeatherModelAdapter());
   // Hive.registerAdapter<WeeklyModel>(WeeklyModelAdapter());
@@ -30,7 +33,7 @@ class LessonApp extends StatelessWidget {
       ),
       // onGenerateRoute: (settings) => Routes.generateRoute(settings),
 
-      home:  const BestClaculatePage(),
+      home: BestClaculatePage("Enter an optional word"),
     );
   }
 }
