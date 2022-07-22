@@ -151,6 +151,7 @@ class _MyWidgetVolumeState extends State<MyWidgetVolume>
       sizes = size;
     });
     return Scaffold(
+      backgroundColor: valumePage,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,

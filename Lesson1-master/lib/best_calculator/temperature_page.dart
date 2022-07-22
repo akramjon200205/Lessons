@@ -99,6 +99,7 @@ class _MyWidgetTemperatureState extends State<MyWidgetTemperature>
       sizes = size;
     });
     return Scaffold(
+      backgroundColor: valumePage,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,

@@ -24,9 +24,10 @@ class SettingPage extends StatefulWidget {
 //   return string1;
 // }
 
+
 class _SettingPageState extends State<SettingPage>
     with TickerProviderStateMixin {
-  late TabController _tabController1;
+  late TabController _tabController2;
   final controller1 = TextEditingController();
   bool _switchValue1 = false;
   bool _switchValue2 = true;
@@ -34,15 +35,16 @@ class _SettingPageState extends State<SettingPage>
   bool _switchValue4 = false;
   bool _switchValue5 = true;
   bool _switchValue6 = false; 
+    
 
   @override
   void initState() {
     super.initState();
 
-    _tabController1 = TabController(length: 2, vsync: this);
+    _tabController2 = TabController(length: 2, vsync: this);
     controller1.addListener(() {
       setState(() {});
-    });
+    });   
   }
 
   @override
@@ -54,7 +56,7 @@ class _SettingPageState extends State<SettingPage>
         elevation: 0,
         backgroundColor: Colors.grey[350],
         title: TabBar(
-          controller: _tabController1,
+          controller: _tabController2,
           tabs: <Widget>[
             Tab(
               icon: Text(
@@ -72,7 +74,7 @@ class _SettingPageState extends State<SettingPage>
         ),
       ),
       body: TabBarView(
-        controller: _tabController1,
+        controller: _tabController2,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 12, right: 12),
@@ -112,18 +114,18 @@ class _SettingPageState extends State<SettingPage>
                           ),
                           child: GestureDetector(
                             onTap: () {
-                              setState(
-                                () {
-                                  // controller3 = controller1.text;
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          BestClaculatePage(controller1.text),
-                                    ),
-                                  );
-                                },
-                              );
+                              // setState(
+                              //   () {
+                              //     // controller3 = controller1.text;
+                              //     Navigator.push(
+                              //       context,
+                              //       MaterialPageRoute(
+                              //         builder: (context) =>
+                              //             BestClaculatePage(controller1.text),
+                              //       ),
+                              //     );
+                              //   },
+                              // );
                             },
                             child: Container(
                               alignment: Alignment.center,
@@ -192,16 +194,11 @@ class _SettingPageState extends State<SettingPage>
                         child: CupertinoSwitch(
                           value: _switchValue3,
                           onChanged: (bool value) async {
-                            setState(() {
-                              _switchValue3 = value;
-                              print(box1.values.first);
-                              box1.put('_switchValue3', _switchValue3);
-                              // box1.delete('_switchValue3');
-                              // print(box1.get('_switchValue3'));
-                              // print(box1.keys);
-                              // _switchValue3 = box1.values.first;
-                              print(box1.values.first);
-                            });
+                            _switchValue3 = value;
+                            print(box1.values.first);
+                            box1.put('_switchValue3', _switchValue3);
+                            print(box1.values.first);
+                            setState(() {});
                           },
                         ),
                       ),
@@ -314,22 +311,22 @@ class _SettingPageState extends State<SettingPage>
                     const SizedBox(
                       height: 20,
                     ),
-                    _itemPage(
+                    _itemPages(
                         "calcualtor_fragment_1", "calcualtor_fragment_2", 1),
                     const SizedBox(
                       height: 20,
                     ),
-                    _itemPage(
+                    _itemPages(
                         "calcualtor_fragment_3", "calcualtor_fragment_4", 3),
                     const SizedBox(
                       height: 20,
                     ),
-                    _itemPage(
+                    _itemPages(
                         "calculator_fragment_5", "calcualtor_fragment_6", 5),
                     const SizedBox(
                       height: 20,
                     ),
-                    _itemPage("google_pixel_2", "xalcualtor_fragment", 7),
+                    _itemPages("google_pixel_2", "xalcualtor_fragment", 7),
                     const SizedBox(
                       height: 20,
                     ),
@@ -343,7 +340,7 @@ class _SettingPageState extends State<SettingPage>
     );
   }
 
-  Row _itemPage(String text, String text2, int number) {
+  Row _itemPages(String text, String text2, int number) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

@@ -112,6 +112,7 @@ class _MyWidgetAreaState extends State<MyWidgetArea>
       sizes = size;
     });
     return Scaffold(
+      backgroundColor: valumePage,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,

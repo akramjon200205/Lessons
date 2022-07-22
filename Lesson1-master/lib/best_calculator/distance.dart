@@ -4,6 +4,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/ticker_provider.dart';
 import 'package:lesson1/best_calculator/change_theme.dart';
+import 'package:lesson1/main.dart';
 import 'package:lesson1/utils/constants.dart';
 import 'package:lesson1/widgets/scale_widget.dart';
 
@@ -121,6 +122,7 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
       sizes = size;
     });
     return Scaffold(
+      backgroundColor: valumePage,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
@@ -129,7 +131,7 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
             // alignment: Alignment.bottomLeft,
             width: double.infinity,
             height: size.height / 4,
-            decoration:  BoxDecoration(
+            decoration: BoxDecoration(
               color: valumePage,
             ),
             child: Padding(
@@ -383,7 +385,9 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
           Container(
             width: double.infinity,
             height: size.height - 307,
-            decoration: BoxDecoration(color: valumePage,),
+            decoration: BoxDecoration(
+              color: valumePage,
+            ),
             child: ListView.builder(
               itemCount: listMap.length,
               itemBuilder: (BuildContext context, int index) {
@@ -491,9 +495,7 @@ class _MyWidgetDistanceState extends State<MyWidgetDistance>
     return Text(
       text,
       style: kTextStyle(
-          size: sizes,
-          color: menuText1,
-          fontWeight: FontWeight.w400),
+          size: sizes, color: menuText1, fontWeight: FontWeight.w400),
     );
   }
 }

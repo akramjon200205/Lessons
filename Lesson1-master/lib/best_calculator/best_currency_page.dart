@@ -284,9 +284,9 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
                         "9",
                         textColor,
                       ),
-                      _itemButtonCurrency(
+                      _itemButtonCurrencyMenu(
                         "⌫",
-                        menuText1,
+                        menuText2,
                       ),
                     ],
                   ),
@@ -322,12 +322,12 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
                             width: 90.89,
                             height: 79,
                             alignment: Alignment.center,
-                            decoration: decorationCurVal,
+                            decoration: decorationMain,
                             child: Image.asset(
                               'assets/down_top.png',
                               width: 25.19,
                               height: 49.84,
-                              color: menuText1,
+                              color: menuText2,
                             ),
                           ),
                         ),
@@ -349,10 +349,7 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
                         "3",
                         textColor,
                       ),
-                      _itemButtonCurrency(
-                        "C",
-                        textColor,
-                      ),
+                      _itemButtonCurrencyMenu("C", clearColor),
                     ],
                   ),
                   Row(
@@ -477,6 +474,31 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
           height: 79,
           alignment: Alignment.center,
           decoration: decorationCurVal,
+          child: Text(
+            textCur,
+            style: kTextStyle(
+                size: 28, color: colorCur, fontWeight: FontWeight.w400),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _itemButtonCurrencyMenu(String textCur, Color colorCur) {
+    return scaleWidget(
+      onTap: () {
+        setState(() {
+          onClickCurrencyButton(textCur);
+        });
+      },
+      scale: 0.8,
+      child: Padding(
+        padding: const EdgeInsets.all(0.5),
+        child: Container(
+          width: 90.89,
+          height: 79,
+          alignment: Alignment.center,
+          decoration: decorationMain,
           child: Text(
             textCur,
             style: kTextStyle(

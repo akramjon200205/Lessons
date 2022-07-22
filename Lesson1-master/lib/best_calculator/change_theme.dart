@@ -28,6 +28,7 @@ const contanierGradient = LinearGradient(
 Color backgroundColorCurrency = const Color(0xff161616);
 Color backgroundColor2 = const Color(0xff262626);
 Color menuText1 = const Color(0xffFF0000);
+Color menuText2 = const Color(0xffFF0000);
 
 Color appBarColor = const Color(0xff161616);
 Color clearColor = const Color(0xffFF0000);
@@ -92,8 +93,11 @@ changeTheme(int choosen) {
       backgroundColor2 = Color(0xffFD0D0D0);
       appBarColor = const Color(0xffAAAAAA);
       menuText1 = const Color(0xff333333);
+      menuText2 = const Color(0xffFFFFFF);
+      clearColor = const Color(0xffFFFFFF);
+
       downChange = const Color(0xff00E0FF);
-      textColor = const Color(0xff333333);
+      textColor = const Color(0xffFFFFFF);
       decoration = const BoxDecoration(
         color: Color(0xffF1EFED),
         border: Border(
@@ -126,15 +130,15 @@ changeTheme(int choosen) {
           color: Color(0xffFAD3B5),
         )),
       );
-      containerColor = const Color(0xffDCDCDC);
+      containerColor = const Color(0xff333333);
 
-      heightGridViewMain = 1;
-      widthGridViewCross = 1;
+      heightGridViewMain = 10;
+      widthGridViewCross = 12;
       leftGra = 0;
       rightGra = 0;
       //currency uchun Box decoration
       decorationCurVal = const BoxDecoration(
-        color: Color(0xffDCDCDC),
+        color: Color(0xff303030),
         border: Border(
           top: BorderSide(
             width: 1,
@@ -154,8 +158,10 @@ changeTheme(int choosen) {
       backgroundColor2 = Color(0xffF3F3F3);
       appBarColor = const Color(0xffCDCDCD);
       menuText1 = const Color(0xff333333);
+      menuText2 = const Color(0xff333333);
       downChange = const Color(0xffEAA425);
       textColor = const Color(0xff656565);
+      clearColor = const Color(0xffFF0000);
       decoration = const BoxDecoration(
         color: Color(0xffF1EFED),
         border: Border(
@@ -201,8 +207,11 @@ changeTheme(int choosen) {
       backgroundColor2 = const Color(0xff454545);
       appBarColor = const Color(0xff262626);
       menuText1 = const Color(0xff00E0FF);
+      menuText2 = const Color(0xff00E0FF);
+
       downChange = const Color(0xff02C4F4);
       textColor = const Color(0xffFFFFFF);
+      clearColor = const Color(0xffFF0000);
       decorationMain = const BoxDecoration(
         color: Color(0xff262626),
       );
@@ -240,6 +249,9 @@ changeTheme(int choosen) {
       appBarColor = const Color(0xff191919);
       // asosiy Textlar va menuning asosiy rangi
       menuText1 = const Color(0xff02C4F4);
+      menuText2 = const Color(0xff02C4F4);
+      clearColor = const Color(0xff02C4F4);
+
       // pastga qaratilgan tugma rangi
       downChange = const Color(0xff02C4F4);
       // asosiy bo'lmagan textlar rangi
@@ -292,8 +304,10 @@ changeTheme(int choosen) {
       backgroundColor2 = const Color(0xff22262F);
       appBarColor = const Color(0xff1F2229);
       menuText1 = const Color(0xffFCA300);
+      menuText2 = const Color(0xffFCA300);
       downChange = const Color(0xff00E0FF);
       textColor = const Color(0xffBBBBBB);
+      clearColor = const Color(0xffFF0000);
       decoration = const BoxDecoration(
         color: Color(0xff32363F),
         border: Border(
@@ -377,6 +391,7 @@ changeTheme(int choosen) {
       distanceColor2 = const Color(0xff161616);
       currencyColor = const Color(0xff262626);
       valumePage = const Color(0xff161616);
+      menuText2 = const Color(0xffFF0000);
       break;
   }
 }
@@ -515,8 +530,11 @@ chekPageDizayn(int number) {
       {
         appBarbackgroundColor = const Color(0xffAAAAAA);
         appBarTextColor = const Color(0xff333333);
+        backgroundColor = const Color(0xff262626);
+        tectColor = const Color(0xffFF0000);
+        contanierColorCal = const Color(0xffD0D0D0);
 
-        decorationCalMenuVer = const BoxDecoration(
+        decorationCalMenuHori = const BoxDecoration(
           gradient: contanierGradient,
           border: Border(
             top: BorderSide(

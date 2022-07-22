@@ -119,6 +119,7 @@ class _MyWidgetMassState extends State<MyWidgetMass>
       sizes = size;
     });
     return Scaffold(
+      backgroundColor: valumePage,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,

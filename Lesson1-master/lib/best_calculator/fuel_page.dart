@@ -106,12 +106,14 @@ class _MyWidgetFuelState extends State<MyWidgetFuel>
       sizes = size;
     });
     return Scaffold(
+      backgroundColor: valumePage,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
-            // alignment: Alignment.bottomLeft,
+
+           // alignment: Alignment.bottomLeft,
             width: double.infinity,
             height: size.height / 4,
             decoration: BoxDecoration(
