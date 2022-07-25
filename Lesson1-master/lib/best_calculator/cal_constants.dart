@@ -1,39 +1,13 @@
-import 'dart:math';
-
 import 'package:eval_ex/expression.dart';
 import 'package:flutter/material.dart';
-import 'package:lesson1/utils/hive_util.dart';
 
-class CalculatorUtils{
+class CalculatorUtils {
   final calculateController = TextEditingController();
   final resultController = TextEditingController();
   double topFieldSize = 35;
   double bottomFieldSize = 45;
-  var scrollConrtoller = ScrollController();
-  int theme = 10;
-  
-  final List<String> buttons = [
-    'C',
-    '+/-',
-    '%',
-    '/',
-    '7',
-    '8',
-    '9',
-    '*',
-    '4',
-    '5',
-    '6',
-    '-',
-    '1',
-    '2',
-    '3',
-    '+',
-    '.',
-    '0',
-    'del',
-    '=',
-  ];
+  int minimumAccuracy = 9;
+  final ValueNotifier<int> theme = ValueNotifier<int>(1);
   final List<String> numbers = [
     '0',
     '1',
@@ -52,7 +26,72 @@ class CalculatorUtils{
   var lastOperated = '';
   bool isSimple = true;
 
-  
+  var scientificButtons = {
+    'RAD': '',
+    'sin': 'SINR(',
+    'cos': 'COSR(',
+    'tan': 'TANR(',
+    'π': 'PI',
+    'sinh': 'ASINR(',
+    'cosh': 'ACOSR(',
+    'tanh': 'ATGR(',
+    'x⁻¹': '^(-1)',
+    'x²': '^2',
+    'x³': '^3',
+    'xⁿ': '^',
+    'log': 'LOG10(',
+    'ln': 'LOG(',
+    'e': 'e',
+    'eⁿ': 'e^',
+    '|x|': 'ABS(',
+    '√': 'SQRT(',
+    '∛': '^(-3)',
+    'n!': 'FACT(',
+  };
+
+  List<Tab> myTabs = [
+    const Tab(
+      icon: Icon(
+        Icons.calculate_outlined,
+        size: 28,
+      ),
+    ),
+    const Tab(
+      icon: Icon(
+        Icons.currency_exchange_sharp,
+        size: 28,
+      ),
+    ),
+    const Tab(
+      icon: Icon(
+        Icons.line_style,
+        size: 28,
+      ),
+    ),
+  ];
+
+  Map<String, String> simpleButtons = {
+    '(': '(',
+    ')': ')',
+    '÷': '/',
+    '⌫': 'del',
+    '7': '7',
+    '8': '8',
+    '9': '9',
+    '×': "*",
+    '4': '4',
+    '5': '5',
+    '6': '6',
+    '-': '-',
+    '1': '1',
+    '2': '2',
+    '3': '3',
+    '+': '+',
+    ',': '.',
+    '0': '0',
+    '%': '%',
+    '=': '=',
+  };
 
   String splitter(String string) {
     final List<String> operators = ['/', '+', '-', '*'];
@@ -82,7 +121,7 @@ class CalculatorUtils{
   }
 
   bool isOperator(String item) {
-    var operatorList = ['/', '+', '-', '*', '.'];
+    var operatorList = ['/', '+', '-', '*', '.', '(', ')'];
     for (var element in operatorList) {
       if (item == element) {
         return true;
@@ -102,13 +141,13 @@ class CalculatorUtils{
       if (!operators.contains(operation.split('').last)) {
         var result = Expression(operation).eval();
         return result.toString().contains('.')
-            ? result!.toStringAsFixed(3)
+            ? result!.toStringAsFixed(minimumAccuracy)
             : result.toString();
       }
       var result =
           Expression(operation.substring(0, operation.length - 1)).eval();
       return result.toString().contains('.')
-          ? result!.toStringAsFixed(3)
+          ? result!.toStringAsFixed(minimumAccuracy)
           : result.toString();
     }
     return operation;

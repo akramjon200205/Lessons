@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lesson1/animation/shuffle_page.dart';
-import 'package:lesson1/animation/simple_anim_page.dart';
+
 import 'package:lesson1/currency/compare_page.dart';
 import 'package:lesson1/currency/currency_page.dart';
 import 'package:lesson1/home_page.dart';
@@ -10,9 +9,6 @@ import 'package:lesson1/nft_ui/discover_page.dart';
 import 'package:lesson1/trackizer/subscript_info_page.dart';
 import 'package:lesson1/weather/weather_page.dart';
 import 'package:lesson1/widgets/example_page.dart';
-
-import '../animation/mainPage.dart';
-import '../animation/shuffle_build_page.dart';
 
 class Routes {
   static const subscriptInfoPage = '/subscriptInfoPage';
@@ -42,18 +38,13 @@ class Routes {
           return MaterialPageRoute(builder: (context) => const WeatherPage());
         case examplePage:
           return MaterialPageRoute(builder: (context) => const ExamplePage());
-        case simpleAnimPage:
-          return MaterialPageRoute(
-              builder: (context) => const SimpleAnimPage());
+       
         case comparePage:
           return MaterialPageRoute(builder: (context) => const ComparePage());
         case auctionPage:
           return MaterialPageRoute(builder: (context) => const AuctionPage());
         case lessonPage:
-          return MaterialPageRoute(builder: (context) => const LessonPage());
-        case shufflePage:
-          return MaterialPageRoute(
-              builder: (context) => const ShuffleBuildPage());
+          return MaterialPageRoute(builder: (context) => const LessonPage());        
         case currencyPage:
           return MaterialPageRoute(
               builder: (context) => CurrencyPage(args?['list_curreny'],

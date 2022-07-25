@@ -67,7 +67,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
         ContextModel cm = ContextModel();
         _resultController.text =
             double.parse("${exp.evaluate(EvaluationType.REAL, cm)}")
-                .toStringAsFixed(2);
+                .toString();
       } catch (e) {
         _resultController.text = "";
       }
@@ -83,8 +83,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
         Expression exp = p.parse(expression);
         ContextModel cm = ContextModel();
         _resultController.text =
-            double.parse("${exp.evaluate(EvaluationType.REAL, cm)}")
-                .toStringAsFixed(2);
+            ("${exp.evaluate(EvaluationType.REAL, cm)}").toString();
         _controller.text = _resultController.text;
       } catch (e) {
         _resultController.text = "Error";
@@ -143,7 +142,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
           ContextModel cm = ContextModel();
           _resultController.text =
               double.parse("${exp.evaluate(EvaluationType.REAL, cm)}")
-                  .toStringAsFixed(2);
+                  .toString();
         } catch (e) {
           _resultController.text = "";
         }

@@ -6,7 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/ticker_provider.dart';
 import 'package:lesson1/best_calculator/about.dart';
 import 'package:lesson1/best_calculator/change_theme.dart';
-import 'package:lesson1/best_calculator/page.dart';
+import 'package:lesson1/best_calculator/main_page.dart';
 import 'package:lesson1/main.dart';
 import 'package:lesson1/utils/constants.dart';
 
@@ -24,28 +24,16 @@ class SettingPage extends StatefulWidget {
 //   return string1;
 // }
 
-
 class _SettingPageState extends State<SettingPage>
     with TickerProviderStateMixin {
-  late TabController _tabController2;
+  late TabController _tabController2 = TabController(length: 2, vsync: this);
   final controller1 = TextEditingController();
   bool _switchValue1 = false;
   bool _switchValue2 = true;
   bool _switchValue3 = true;
   bool _switchValue4 = false;
   bool _switchValue5 = true;
-  bool _switchValue6 = false; 
-    
-
-  @override
-  void initState() {
-    super.initState();
-
-    _tabController2 = TabController(length: 2, vsync: this);
-    controller1.addListener(() {
-      setState(() {});
-    });   
-  }
+  bool _switchValue6 = false;
 
   @override
   Widget build(BuildContext context) {

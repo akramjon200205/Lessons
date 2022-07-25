@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
-import 'package:lesson1/best_calculator/best_currency_model.dart';
-import 'package:lesson1/best_calculator/best_currency_search_page.dart';
+import 'package:lesson1/best_calculator/best_currency/best_currency_model/best_currency_model.dart';
+import 'package:lesson1/best_calculator/best_currency/best_currency_search_page.dart';
 import 'package:lesson1/best_calculator/change_theme.dart';
 import 'package:lesson1/utils/constants.dart';
 import 'package:lesson1/utils/hive_util.dart';
@@ -36,7 +36,7 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
     if (text == "C") {
       _editingControllerTop.text = "";
     } else if (text == "⌫") {
-      if (_editingControllerTop.text.length >= 1) {
+      if (_editingControllerTop.text.isNotEmpty) {
         _editingControllerTop.text = _editingControllerTop.text
             .substring(0, _editingControllerTop.text.length - 1);
       } else {}
@@ -319,14 +319,14 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
                         child: Padding(
                           padding: const EdgeInsets.all(0.5),
                           child: Container(
-                            width: 90.89,
-                            height: 79,
+                            width: 90,
+                            height: 80,
                             alignment: Alignment.center,
                             decoration: decorationMain,
                             child: Image.asset(
                               'assets/down_top.png',
-                              width: 25.19,
-                              height: 49.84,
+                              width: 25,
+                              height: 50,
                               color: menuText2,
                             ),
                           ),
@@ -372,7 +372,7 @@ class _BestCurrencyPageState extends State<BestCurrencyPage> with HiveUtil {
                           padding: const EdgeInsets.all(1.0),
                           child: Container(
                             width: 91.4 * 2,
-                            height: 79,
+                            height: 80,
                             alignment: Alignment.center,
                             decoration: decorationCurVal,
                             child: Text(

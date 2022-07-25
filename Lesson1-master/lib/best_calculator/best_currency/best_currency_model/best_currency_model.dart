@@ -46,8 +46,7 @@ class BestCurrencyModel extends HiveObject {
     return 'BestCurrencyModel(id: $id, code: $code, ccy: $ccy, ccyNmRu: $ccyNmRu, ccyNmUz: $ccyNmUz, ccyNmUzc: $ccyNmUzc, ccyNmEn: $ccyNmEn, nominal: $nominal, rate: $rate, diff: $diff, date: $date)';
   }
 
-  factory BestCurrencyModel.fromJson(Map<String, dynamic> json) =>
-      BestCurrencyModel(
+  factory BestCurrencyModel.fromJson(Map<String, dynamic> json) => BestCurrencyModel(
         id: json['id'] as int?,
         code: json['Code'] as String?,
         ccy: json['Ccy'] as String?,

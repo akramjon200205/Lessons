@@ -97,7 +97,7 @@ changeTheme(int choosen) {
       clearColor = const Color(0xffFFFFFF);
 
       downChange = const Color(0xff00E0FF);
-      textColor = const Color(0xffFFFFFF);
+      textColor = Colors.grey;
       decoration = const BoxDecoration(
         color: Color(0xffF1EFED),
         border: Border(
@@ -202,6 +202,43 @@ changeTheme(int choosen) {
       distanceColor1 = const Color(0xffDCDCDC);
       distanceColor2 = const Color(0xffC7C7C7);
       valumePage = const Color(0xffC7C7C7);
+      break;
+
+    case 3:
+      backgroundColor2 = const Color(0xff023844);
+      appBarColor = const Color(0xff00E9F8);
+      menuText1 = const Color(0xffC6FDFF);
+      menuText2 = const Color(0xff9EFEFF);
+
+      downChange = const Color(0xff02C4F4);
+      textColor = const Color(0xff9EFEFF);
+      clearColor = const Color(0xff9EFEFF);
+      decorationMain = const BoxDecoration(
+        // color: Color(0xff00E9F8),
+        image: DecorationImage(
+            image: ExactAssetImage("assets/pagePage.png", scale: 0.5),
+            fit: BoxFit.fill),
+      );
+      decoration = const BoxDecoration(
+        // color: Color(0xff00E9F8),
+        image: DecorationImage(
+            image: ExactAssetImage("assets/pagePage.png", scale: 0.5),
+            fit: BoxFit.cover),
+      );
+      decorationMain1 = decorationMain;
+      containerColor = const Color(0xff05525D);
+      widthGridViewCross = 1;
+      heightGridViewMain = 1.04;
+      leftGra = 0;
+      rightGra = 0;
+      //currency uchun Box decoration
+      decorationCurVal = const BoxDecoration(
+        image: DecorationImage(
+            image: ExactAssetImage("assets/pagePage.png"), fit: BoxFit.cover),
+      );
+      distanceColor1 = const Color(0xff454545);
+      distanceColor2 = const Color(0xff555454);
+      valumePage = const Color(0xff262626);
       break;
     case 4:
       backgroundColor2 = const Color(0xff454545);
@@ -397,152 +434,152 @@ changeTheme(int choosen) {
 }
 
 //appBar text color uchun
-Color appBarTextColor = const Color(0xffFF0000);
-Color appBarbackgroundColor = const Color(0xff161616);
-Color backgroundColor = const Color(0xff262626);
-Color menuContanierColorCalHori = const Color(0xff161616);
-Color menuContanierColorCalVer = const Color(0xff161616);
-Color contanierColorCal = const Color(0xff262626);
-Color tectColor = const Color(0xffFF0000);
-Color menuTextColorCal = const Color(0xffFF0000);
-Color buttomSheetColor = const Color(0xffFF0000);
-Color buttomSheetHistoryColor = const Color(0xffFF0000);
-Color historyButtonBorder = const Color(0xffBBBBBB);
-Color historyButtonIconColor = const Color(0xffC3C3C3);
-Color currencyContanierColor = const Color(0xff262626);
-Color currencyBackgroundColor = const Color(0xff434343);
-Color fromCurrencyColor = const Color(0xff00E0FF);
-Color inCurrencyColor = const Color(0xffFF4D00);
-Color currencyTextCcyColor = const Color(0xffFFFFFF);
-Color menuCurrencyButtonColor = const Color(0xff161616);
-Color menuCurrencyColor = const Color(0xffFF0000);
-Color refreshCurrencyColor = const Color(0xffD4D4D4);
-Color currencyTextColor = const Color(0xffFFFFFF);
-Color valumeAppBarColor = const Color(0xff161616);
-Color valumeContainer1Color = const Color(0xff161616);
-Color valumeList1Color = const Color(0xff262626);
-Color valumeListColor = const Color(0xff161616);
-Color valumeButtomSheetColor = const Color(0xff262626);
-Color valumeButtomSheetButtonColor = const Color(0xff161616);
-Color valumeButtomSheetBottonManuColor = const Color(0xffFF0000);
-Color valumeButtomSheetDownColor = const Color(0xffFF0000);
+// Color appBarTextColor = const Color(0xffFF0000);
+// Color appBarbackgroundColor = const Color(0xff161616);
+// Color backgroundColor = const Color(0xff262626);
+// Color menuContanierColorCalHori = const Color(0xff161616);
+// Color menuContanierColorCalVer = const Color(0xff161616);
+// Color contanierColorCal = const Color(0xff262626);
+// Color tectColor = const Color(0xffFF0000);
+// Color menuTextColorCal = const Color(0xffFF0000);
+// Color buttomSheetColor = const Color(0xffFF0000);
+// Color buttomSheetHistoryColor = const Color(0xffFF0000);
+// Color historyButtonBorder = const Color(0xffBBBBBB);
+// Color historyButtonIconColor = const Color(0xffC3C3C3);
+// Color currencyContanierColor = const Color(0xff262626);
+// Color currencyBackgroundColor = const Color(0xff434343);
+// Color fromCurrencyColor = const Color(0xff00E0FF);
+// Color inCurrencyColor = const Color(0xffFF4D00);
+// Color currencyTextCcyColor = const Color(0xffFFFFFF);
+// Color menuCurrencyButtonColor = const Color(0xff161616);
+// Color menuCurrencyColor = const Color(0xffFF0000);
+// Color refreshCurrencyColor = const Color(0xffD4D4D4);
+// Color currencyTextColor = const Color(0xffFFFFFF);
+// Color valumeAppBarColor = const Color(0xff161616);
+// Color valumeContainer1Color = const Color(0xff161616);
+// Color valumeList1Color = const Color(0xff262626);
+// Color valumeListColor = const Color(0xff161616);
+// Color valumeButtomSheetColor = const Color(0xff262626);
+// Color valumeButtomSheetButtonColor = const Color(0xff161616);
+// Color valumeButtomSheetBottonManuColor = const Color(0xffFF0000);
+// Color valumeButtomSheetDownColor = const Color(0xffFF0000);
 
-double menuButtonWidth = 1.04;
-double menuButtonCross = 1;
+// double menuButtonWidth = 1.04;
+// double menuButtonCross = 1;
 
-const contaniergradient = LinearGradient(
-  colors: [
-    Color(0xffAAAAAA),
-    Color(0xffD0D0D0),
-  ],
-  begin: Alignment.topCenter,
-  end: Alignment.bottomCenter,
-  stops: [0.3, 1],
-);
+// const contaniergradient = LinearGradient(
+//   colors: [
+//     Color(0xffAAAAAA),
+//     Color(0xffD0D0D0),
+//   ],
+//   begin: Alignment.topCenter,
+//   end: Alignment.bottomCenter,
+//   stops: [0.3, 1],
+// );
 
-// Calculator page uchun
-BoxDecoration decorationCalMenuVer = const BoxDecoration(
-  color: Color(0xff161616),
-  border: Border(
-    top: BorderSide(width: 1, color: Color(0xff484D58)),
-  ),
-);
-BoxDecoration decorationCalMenuHori = const BoxDecoration(
-  color: Color(0xff262626),
-  border: Border(
-    top: BorderSide(
-      width: 1,
-      color: Color(0xff484D58),
-    ),
-  ),
-);
-BoxDecoration decorationCal = const BoxDecoration(
-  color: Color(0xff262626),
-  border: Border(
-    top: BorderSide(
-      width: 1,
-      color: Color(0xff484D58),
-    ),
-  ),
-);
+// // Calculator page uchun
+// BoxDecoration decorationCalMenuVer = const BoxDecoration(
+//   color: Color(0xff161616),
+//   border: Border(
+//     top: BorderSide(width: 1, color: Color(0xff484D58)),
+//   ),
+// );
+// BoxDecoration decorationCalMenuHori = const BoxDecoration(
+//   color: Color(0xff262626),
+//   border: Border(
+//     top: BorderSide(
+//       width: 1,
+//       color: Color(0xff484D58),
+//     ),
+//   ),
+// );
+// BoxDecoration decorationCal = const BoxDecoration(
+//   color: Color(0xff262626),
+//   border: Border(
+//     top: BorderSide(
+//       width: 1,
+//       color: Color(0xff484D58),
+//     ),
+//   ),
+// );
 
-// Currency uchun
-BoxDecoration decorationCurrancyButton = const BoxDecoration(
-  color: Color(0xff161616),
-  border: Border(
-    top: BorderSide(
-      width: 1,
-      color: Color(0xff484D58),
-    ),
-    right: BorderSide(
-      width: 1,
-      color: Color(0xff484D58),
-    ),
-  ),
-);
+// // Currency uchun
+// BoxDecoration decorationCurrancyButton = const BoxDecoration(
+//   color: Color(0xff161616),
+//   border: Border(
+//     top: BorderSide(
+//       width: 1,
+//       color: Color(0xff484D58),
+//     ),
+//     right: BorderSide(
+//       width: 1,
+//       color: Color(0xff484D58),
+//     ),
+//   ),
+// );
 
-BoxDecoration decorationCurrancyButtonMenu = const BoxDecoration(
-  color: Color(0xff161616),
-  border: Border(
-    top: BorderSide(
-      width: 1,
-      color: Color(0xff484D58),
-    ),
-    right: BorderSide(
-      width: 1,
-      color: Color(0xff484D58),
-    ),
-  ),
-);
+// BoxDecoration decorationCurrancyButtonMenu = const BoxDecoration(
+//   color: Color(0xff161616),
+//   border: Border(
+//     top: BorderSide(
+//       width: 1,
+//       color: Color(0xff484D58),
+//     ),
+//     right: BorderSide(
+//       width: 1,
+//       color: Color(0xff484D58),
+//     ),
+//   ),
+// );
 
-//Valume uchun
-BoxDecoration decorationValumeButton = const BoxDecoration(
-  color: Color(0xff161616),
-  border: Border(
-    top: BorderSide(
-      width: 1,
-      color: Color(0xff484D58),
-    ),
-    right: BorderSide(
-      width: 1,
-      color: Color(0xff484D58),
-    ),
-  ),
-);
+// //Valume uchun
+// BoxDecoration decorationValumeButton = const BoxDecoration(
+//   color: Color(0xff161616),
+//   border: Border(
+//     top: BorderSide(
+//       width: 1,
+//       color: Color(0xff484D58),
+//     ),
+//     right: BorderSide(
+//       width: 1,
+//       color: Color(0xff484D58),
+//     ),
+//   ),
+// );
 
-BoxDecoration decorationValumeButtonMenu = const BoxDecoration(
-  color: Color(0xff161616),
-  border: Border(
-    top: BorderSide(
-      width: 1,
-      color: Color(0xff484D58),
-    ),
-    right: BorderSide(
-      width: 1,
-      color: Color(0xff484D58),
-    ),
-  ),
-);
+// BoxDecoration decorationValumeButtonMenu = const BoxDecoration(
+//   color: Color(0xff161616),
+//   border: Border(
+//     top: BorderSide(
+//       width: 1,
+//       color: Color(0xff484D58),
+//     ),
+//     right: BorderSide(
+//       width: 1,
+//       color: Color(0xff484D58),
+//     ),
+//   ),
+// );
 
-chekPageDizayn(int number) {
-  switch (number) {
-    case 1:
-      {
-        appBarbackgroundColor = const Color(0xffAAAAAA);
-        appBarTextColor = const Color(0xff333333);
-        backgroundColor = const Color(0xff262626);
-        tectColor = const Color(0xffFF0000);
-        contanierColorCal = const Color(0xffD0D0D0);
+// chekPageDizayn(int number) {
+//   switch (number) {
+//     case 1:
+//       {
+//         appBarbackgroundColor = const Color(0xffAAAAAA);
+//         appBarTextColor = const Color(0xff333333);
+//         backgroundColor = const Color(0xff262626);
+//         tectColor = const Color(0xffFF0000);
+//         contanierColorCal = const Color(0xffD0D0D0);
 
-        decorationCalMenuHori = const BoxDecoration(
-          gradient: contanierGradient,
-          border: Border(
-            top: BorderSide(
-              width: 1.5,
-              color: Color(0xffFAD3B5),
-            ),
-          ),
-        );
-      }
-  }
-}
+//         decorationCalMenuHori = const BoxDecoration(
+//           gradient: contanierGradient,
+//           border: Border(
+//             top: BorderSide(
+//               width: 1.5,
+//               color: Color(0xffFAD3B5),
+//             ),
+//           ),
+//         );
+//       }
+//   }
+// }

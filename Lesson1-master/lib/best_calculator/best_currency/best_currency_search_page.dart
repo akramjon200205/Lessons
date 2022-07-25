@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lesson1/best_calculator/best_currency_model.dart';
+import 'package:lesson1/best_calculator/best_currency/best_currency_model/best_currency_model.dart';
 import 'package:lesson1/utils/constants.dart';
 
 class BestBestCurrencyPage extends StatefulWidget {

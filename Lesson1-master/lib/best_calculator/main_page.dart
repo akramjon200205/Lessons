@@ -1,53 +1,58 @@
 import 'dart:async';
 import 'dart:math';
 
+// import 'package:eval_ex/expression.dart';
+// import 'package:eval_ex/expression.dart';
+import 'package:eval_ex/expression.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:lesson1/best_calculator/area_pagea.dart';
-import 'package:lesson1/best_calculator/best_currency_page.dart';
+import 'package:lesson1/best_calculator/measurements/measuments_page.dart';
+import 'package:lesson1/best_calculator/best_currency/best_currency_page.dart';
 import 'package:lesson1/best_calculator/cal_constants.dart';
 import 'package:lesson1/best_calculator/change_theme.dart';
-import 'package:lesson1/best_calculator/fuel_page.dart';
-import 'package:lesson1/best_calculator/mass_page.dart';
-import 'package:lesson1/best_calculator/best_currency_model.dart';
 
-import 'package:lesson1/best_calculator/temperature_page.dart';
-import 'package:lesson1/best_calculator/volume_page.dart';
+import 'package:lesson1/best_calculator/best_currency/best_currency_model/best_currency_model.dart';
+
 import 'package:lesson1/main.dart';
 import 'package:lesson1/utils/constants.dart';
 import 'package:lesson1/utils/hive_util.dart';
 import 'package:lesson1/widgets/scale_widget.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/services.dart';
+// import 'package:math_expressions/math_expressions.dart';
+// import 'package:vibration/vibration.dart';
 import 'package:wakelock/wakelock.dart';
 
 import 'about.dart';
-import 'cooking_page.dart';
-import 'distance.dart';
 
-class BestClaculatePage extends StatefulWidget {
-  BestClaculatePage(this.bestController, {Key? key}) : super(key: key);
+import 'measurements/measurments_utills.dart';
+
+class MainPage extends StatefulWidget {
+  MainPage(this.bestController, {Key? key}) : super(key: key);
   String bestController;
-
+  
   @override
-  State<BestClaculatePage> createState() =>
-      _BestClaculatePageState(bestController);
+  State<MainPage> createState() =>
+      _MainPageState(bestController);
 }
 
-class _BestClaculatePageState extends State<BestClaculatePage>
-    with TickerProviderStateMixin, HiveUtil, CalculatorUtils {
-  _BestClaculatePageState(this.bestController1);
+class _MainPageState extends State<MainPage>
+    with
+        TickerProviderStateMixin,
+        HiveUtil,
+        CalculatorUtils,
+        MeasurmentsUtills {
+  _MainPageState(this.bestController1);
 
   var scrollConrtoller = ScrollController();
 
   late TabController _tabController;
   late TabController _tabController1;
   late List hiveMap;
-  late List hiveList;
+  List<String> hiveList = [];
 
-  final _bestResultController = TextEditingController(); //
   final TextEditingController _editingControllerTop = TextEditingController();
   final TextEditingController _editingControllerBottom =
       TextEditingController();
@@ -62,6 +67,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
   bool _switchValue4 = false;
   bool _switchValue5 = true;
   bool _switchValue6 = false;
+  final ValueNotifier<int> _counter = ValueNotifier<int>(0);
 
   bool click = false;
   bool isPage1 = false;
@@ -72,10 +78,15 @@ class _BestClaculatePageState extends State<BestClaculatePage>
   String expression = "";
 
   double animCricleClear = 0;
-
-  List<BestCurrencyModel> _listCurrency = [];
   BestCurrencyModel? topCur;
   BestCurrencyModel? bottomCur;
+
+  factorial(int n) {
+    if (n <= 1) {
+      return 1;
+    }
+    return n * factorial(n - 1);
+  }
 
   @override
   void initState() {
@@ -87,8 +98,6 @@ class _BestClaculatePageState extends State<BestClaculatePage>
     // bestController1 = controller1.text;
     scrollConrtoller = ScrollController();
     hiveMap = [];
-
-    hiveList = [];
 
     // scrollConrtoller.addListener(() {
     //   if (scrollConrtoller.position.userScrollDirection ==
@@ -146,7 +155,197 @@ class _BestClaculatePageState extends State<BestClaculatePage>
     });
   }
 
-  writer(String text) async {
+  // writer(String text) async {
+  //   if (text == 'C') {
+  //     calculateController.text = '';
+  //     resultController.text = '';
+  //     topFieldSize = 35;
+  //     bottomFieldSize = 45;
+  //   } else if (text == 'del') {
+  //     if (calculateController.text.isNotEmpty) {
+  //       calculateController.text = calculateController.text
+  //           .substring(0, calculateController.text.length - 1);
+  //       var res = calculate(calculateController.text);
+  //       if (res != null) {
+  //         resultController.text = "=$res";
+  //       }
+  //     } else {}
+  //   } else if (text == '=') {
+  //     if (resultController.text.isEmpty) {}
+  //     if (resultController.text.isNotEmpty) {
+  //       box.put("${resultController.text}", "${calculateController.text}");
+  //       hiveMap = box.values.toList();
+  //       hiveList.add("${resultController.text}");
+  //       print(box.get("${resultController.text}"));
+  //       setState(() {
+  //         calculateController.text = resultController.text.substring(1);
+  //       });
+
+  //       resultController.text = '';
+  //     } else {}
+  //   } else if (text == '+/-') {
+  //     if (resultController.text.length > 1) {
+  //       if (resultController.text.contains('-')) {
+  //         resultController.text = '=${resultController.text.substring(2)}';
+  //       } else {
+  //         resultController.text = '=-${resultController.text.substring(1)}';
+  //       }
+  //     }
+  //   } else if (text == '√') {
+  //     if (calculateController.text.isNotEmpty) {
+  //       calculateController.text =
+  //           sqrt(double.parse(calculate(calculateController.text)))
+  //               .toStringAsFixed(3);
+
+  //       var res = calculateController.text.toString().contains('.')
+  //           ? double.parse(calculateController.text).toStringAsFixed(3)
+  //           : calculateController.text.toString();
+  //       resultController.text = "=$res";
+  //     }
+  //   } else if (text == 'π') {
+  //     calculateController.text += pi.toStringAsFixed(3);
+  //   } else if (text == '%') {
+  //     if (calculateController.text.isNotEmpty) {
+  //       var last = splitter(calculateController.text);
+
+  //       var calculateText = calculateController.text;
+  //       calculateController.text =
+  //           '${calculateText.substring(0, calculateText.length - last.length)}${double.parse(last) / 100}';
+  //       var res = calculate(calculateController.text);
+  //       if (res != null) {
+  //         resultController.text = "=$res";
+  //       }
+  //     }
+  //   } else if (text == '/' || text == 'x' || text == '+' || text == '-') {
+  //     if (text == 'x') {
+  //       text = '*';
+  //     }
+  //     lastOperator = text;
+  //     if (calculateController.text.isNotEmpty &&
+  //         !isOperator(
+  //             calculateController.text[calculateController.text.length - 1])) {
+  //       calculateController.text += text;
+  //       var res = calculate(calculateController.text);
+  //       if (res != null) {
+  //         resultController.text = "=$res";
+  //       }
+  //     }
+  //   } else if (text == 'e') {
+  //     calculateController.text += text;
+  //   } else if (text == 'n!') {
+  //   } else if (text == "|x|") {
+  //     if (calculateController.text.isNotEmpty &&
+  //         double.parse(calculateController.text) < 0) {
+  //       var modul = double.parse(calculateController.text) * (-1);
+  //       var res = calculateController.text.toString().contains('.')
+  //           ? double.parse(calculateController.text).abs().toStringAsFixed(3)
+  //           : modul.toString();
+  //       resultController.text = "=$res";
+  //     }
+  //   } else if (text == 'n!') {
+  //   } else if (text == 'x²' && calculateController.text.isNotEmpty) {
+  //     calculateController.text =
+  //         (pow(double.parse(calculateController.text), 2).toString());
+  //     var res = calculateController.text.toString().contains('.')
+  //         ? double.parse(calculateController.text).toStringAsFixed(3)
+  //         : calculateController.text.toString();
+
+  //     resultController.text = "=$res";
+  //   } else if (text == 'x³' && calculateController.text.isNotEmpty) {
+  //     calculateController.text =
+  //         (pow(double.parse(calculateController.text), 3).toString());
+  //     var res = calculateController.text.toString().contains('.')
+  //         ? double.parse(calculateController.text).toStringAsFixed(3)
+  //         : calculateController.text.toString();
+
+  //     resultController.text = "=$res";
+  //   } else if (text == 'x⁻¹') {
+  //     if (calculateController.text.isNotEmpty) {
+  //       calculateController.text =
+  //           (1 / double.parse(calculateController.text)).toString();
+
+  //       var res = calculateController.text.toString().contains('.')
+  //           ? double.parse(calculateController.text).toStringAsFixed(3)
+  //           : calculateController.text.toString();
+
+  //       resultController.text = "=$res";
+  //     }
+  //   } else if (text == '.') {
+  //     if (calculateController.text.isNotEmpty &&
+  //         !isOperator(
+  //             calculateController.text[calculateController.text.length - 1])) {
+  //       if (calculateController.text.isNotEmpty) {
+  //         var last = splitter(calculateController.text);
+  //         if (!last.contains('.')) {
+  //           calculateController.text += text;
+  //           var res = calculate(calculateController.text);
+  //           if (res != null) {
+  //             resultController.text = "=$res";
+  //           }
+  //         }
+  //       }
+  //     }
+  //   } else if (text == "xⁿ") {
+  //     if (calculateController.text.isNotEmpty) {
+  //       if (!isOperator(
+  //           calculateController.text[calculateController.text.length - 1])) {
+  //         calculateController.text += "^";
+  //       }
+  //     } else {}
+  //   } else {
+  //     var res;
+  //     if (text == 'x' && calculateController.text.isNotEmpty) {
+  //       text = '*';
+  //     }
+  //     if (text == '(') {
+  //       if (calculateController.text.isEmpty) {
+  //         calculateController.text += '(';
+  //       } else if (operators.contains(
+  //           calculateController.text[calculateController.text.length - 1])) {
+  //         calculateController.text += text;
+  //         resultController.text =
+  //             calculate(bracketFiller(calculateController.text));
+  //       } else {
+  //         calculateController.text += '$text';
+  //       }
+  //     } else if (text == ')') {
+  //       if (!operators.contains(calculateController.text.length - 1) &&
+  //           calculateController.text.isNotEmpty) {
+  //         if (bracketDifference(calculateController.text) > 0) {
+  //           calculateController.text += text;
+  //           resultController.text =
+  //               calculate(bracketFiller(calculateController.text));
+  //         }
+  //       }
+  //     }
+
+  //     else if (resultController.text.isEmpty &&
+  //         calculateController.text.isNotEmpty) {
+  //       calculateController.text = text;
+  //       resultController.text = text;
+  //     } else {
+  //       if (resultController.text.isEmpty &&
+  //         calculateController.text.isNotEmpty) {
+  //       if(calculateController.text.contains('(')){
+  //         calculateController.text += text;
+  //       }else {
+  //         calculateController.text = text;
+  //       }
+  //       resultController.text = text;
+  //     } else {
+  //       calculateController.text += text;
+  //       var res = calculate(bracketFiller(calculateController.text));
+  //       if (res != null) {
+  //         resultController.text = "$res";
+  //       }
+  //     }
+  //     }
+  //   }
+
+  //   // setState(() {});
+  // }
+
+  writer(String text) {
     if (text == 'C') {
       calculateController.text = '';
       resultController.text = '';
@@ -156,68 +355,53 @@ class _BestClaculatePageState extends State<BestClaculatePage>
       if (calculateController.text.isNotEmpty) {
         calculateController.text = calculateController.text
             .substring(0, calculateController.text.length - 1);
-        var res = calculate(calculateController.text);
+        var res = calculate(bracketFiller(calculateController.text));
         if (res != null) {
-          resultController.text = "=$res";
+          resultController.text = "$res";
         }
       }
     } else if (text == '=') {
-      if (resultController.text.isEmpty) {}
       if (resultController.text.isNotEmpty) {
-        box.put("${resultController.text}", ["${calculateController.text}"]);
+        var currentTime = DateTime.now().toString();
+        box.put("${resultController.text}", "${calculateController.text}");
         hiveMap = box.values.toList();
-        hiveList = box.keys.toList();
+        hiveList.add("${resultController.text}");
         print(box.get("${resultController.text}"));
-        calculateController.text = resultController.text.substring(1);
+        calculateController.text = resultController.text;
         resultController.text = '';
-      } else {}
+      }
     } else if (text == '+/-') {
       if (resultController.text.length > 1) {
         if (resultController.text.contains('-')) {
-          resultController.text = '=${resultController.text.substring(2)}';
+          resultController.text = resultController.text.substring(1);
         } else {
-          resultController.text = '=-${resultController.text.substring(1)}';
+          resultController.text = '-${resultController.text.substring(1)}';
         }
       }
     } else if (text == '%') {
       if (calculateController.text.isNotEmpty) {
         var last = splitter(calculateController.text);
-
         var calculateText = calculateController.text;
         calculateController.text =
             '${calculateText.substring(0, calculateText.length - last.length)}${double.parse(last) / 100}';
-        var res = calculate(calculateController.text);
+        var res = calculate(bracketFiller(calculateController.text));
         if (res != null) {
-          resultController.text = "=$res";
+          resultController.text = "$res";
         }
       }
-    } else if (text == '/' || text == '*' || text == '+' || text == '-') {
+    } else if (text == '/' ||
+        text == '*' ||
+        text == '+' ||
+        text == '-') {
       lastOperator = text;
       if (calculateController.text.isNotEmpty &&
           !isOperator(
               calculateController.text[calculateController.text.length - 1])) {
         calculateController.text += text;
-        var res = calculate(calculateController.text);
+        var res = calculate(bracketFiller(calculateController.text));
         if (res != null) {
-          resultController.text = "=$res";
+          resultController.text = "$res";
         }
-      }
-    }
-    // else if(text == 'sinh') {
-    //   sinh(num )
-    // } else if () {
-
-    // }
-    else if (text == 'x⁻¹') {
-      if (calculateController.text.isNotEmpty) {
-        calculateController.text =
-            (1 / double.parse(calculateController.text)).toString();
-
-        var res = calculateController.text.toString().contains('.')
-            ? double.parse(calculateController.text).toStringAsFixed(3)
-            : calculateController.text.toString();
-
-        resultController.text = "=$res";
       }
     } else if (text == '.') {
       if (calculateController.text.isNotEmpty &&
@@ -227,37 +411,85 @@ class _BestClaculatePageState extends State<BestClaculatePage>
           var last = splitter(calculateController.text);
           if (!last.contains('.')) {
             calculateController.text += text;
-            var res = calculate(calculateController.text);
+            var res = calculate(bracketFiller(calculateController.text));
             if (res != null) {
-              resultController.text = "=$res";
+              resultController.text = "$res";
             }
           }
         }
       }
-    } else if (text == "xⁿ") {
-      calculateController.text += "^";
+    } else if (text == '(') {
+      if (calculateController.text.isEmpty) {
+        calculateController.text += text;
+      } else if (operators.contains(
+          calculateController.text[calculateController.text.length - 1])) {
+        calculateController.text += text;
+        resultController.text =
+            calculate(bracketFiller(calculateController.text));
+      } else {
+        calculateController.text += '*$text';
+      }
+    } else if (text == ')') {
+      if (!operators.contains(
+              calculateController.text[calculateController.text.length - 1]) &&
+          calculateController.text.isNotEmpty) {
+        if (bracketDifference(calculateController.text) > 0) {
+          calculateController.text += text;
+          resultController.text =
+              calculate(bracketFiller(calculateController.text));
+        }
+      }
     } else {
       if (resultController.text.isEmpty &&
           calculateController.text.isNotEmpty) {
-        calculateController.text = text;
+        if (calculateController.text.contains('(')) {
+          calculateController.text += text;
+        } else {
+          calculateController.text = text;
+        }
         resultController.text = text;
       } else {
         calculateController.text += text;
-        if (!calculateController.text.contains("^")) {
-        } else {
-          var last = splitter(calculateController.text);
-          var calculateText = calculateController.text;
-          var first = splitterXn(last);
-          var lastXn = splitterXnLast(last);
-          calculateController.text =
-              '${calculateText.substring(0, calculateText.length - last.length)}${pow(double.parse(first), double.parse(lastXn))}';
-        }
-        var res = calculate(calculateController.text);
+        var res = calculate(bracketFiller(calculateController.text));
         if (res != null) {
-          resultController.text = "=$res";
+          resultController.text = "$res";
         }
       }
     }
+  }
+
+
+  int bracketDifference(String operation) {
+    int left = 0;
+    int right = 0;
+    for (int i = 0; i < operation.length; i++) {
+      if (operation[i] == '(') {
+        left++;
+      }
+      if (operation[i] == ')') {
+        right++;
+      }
+    }
+    return left - right;
+  }
+
+  String bracketFiller(String operation) {
+    int left = 0;
+    int right = 0;
+    for (int i = 0; i < operation.length; i++) {
+      if (operation[i] == '(') {
+        left++;
+      }
+      if (operation[i] == ')') {
+        right++;
+      }
+    }
+    for (int j = 0; j < left - right; j++) {
+      if (!operators.contains(operation[operation.length - 1])) {
+        operation += '*1)';
+      }
+    }
+    return operation;
   }
 
   @override
@@ -493,7 +725,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              BestClaculatePage(
+                                              MainPage(
                                                   bestController1),
                                         ),
                                       );
@@ -814,71 +1046,89 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                                                   ],
                                                 ),
                                               ),
-                                              Container(
-                                                width: double.infinity,
-                                                height: size.height * 0.775,
-                                                decoration: const BoxDecoration(
-                                                  color: Color(0xff262626),
-                                                  border: Border(
-                                                    top: BorderSide(
-                                                      width: 1,
-                                                      color: Color(0xffFF0000),
-                                                    ),
-                                                    bottom: BorderSide(
-                                                      width: 1,
-                                                      color: Color(0xffFF0000),
-                                                    ),
-                                                  ),
-                                                ),
-                                                child: ListView.builder(
-                                                  itemCount: hiveList.length,
-                                                  itemBuilder:
-                                                      ((BuildContext context,
-                                                          int index) {
-                                                    return Container(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      width: double.infinity,
-                                                      height: 100,
-                                                      decoration: BoxDecoration(
-                                                          color: Colors.black,
-                                                          border: Border.all(
-                                                              width: 2,
-                                                              color:
-                                                                  Colors.red)),
-                                                      child: ListTile(
-                                                        leading: InkWell(
-                                                          onTap: () {
-                                                            hiveList.removeAt(
-                                                                index);
-                                                            hiveMap.removeAt(
-                                                                index);
-                                                            box.deleteAt(index);
-                                                          },
-                                                          child: const Icon(
-                                                            CupertinoIcons
-                                                                .delete,
-                                                            color: Colors.red,
-                                                            size: 25,
-                                                          ),
+                                              ValueListenableBuilder<int>(
+                                                builder:
+                                                    (context, value, child) {
+                                                  return Container(
+                                                    width: double.infinity,
+                                                    height: size.height * 0.775,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      color: Color(0xff262626),
+                                                      border: Border(
+                                                        top: BorderSide(
+                                                          width: 1,
+                                                          color:
+                                                              Color(0xffFF0000),
                                                         ),
-                                                        title: Text(
-                                                          "${hiveMap[index]}",
-                                                          style: kTextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              size: 20),
-                                                        ),
-                                                        subtitle: Text(
-                                                          "${hiveList[index]}",
-                                                          style: kTextStyle(
-                                                              color: Colors.red,
-                                                              size: 18),
+                                                        bottom: BorderSide(
+                                                          width: 1,
+                                                          color:
+                                                              Color(0xffFF0000),
                                                         ),
                                                       ),
-                                                    );
-                                                  }),
-                                                ),
+                                                    ),
+                                                    child: ListView.builder(
+                                                      itemCount:
+                                                          hiveList.length,
+                                                      itemBuilder:
+                                                          ((BuildContext
+                                                                  context,
+                                                              int index) {
+                                                        return Container(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          width:
+                                                              double.infinity,
+                                                          height: 100,
+                                                          decoration: BoxDecoration(
+                                                              color:
+                                                                  Colors.black,
+                                                              border: Border.all(
+                                                                  width: 2,
+                                                                  color: Colors
+                                                                      .red)),
+                                                          child: ListTile(
+                                                            leading: InkWell(
+                                                              onTap: () {
+                                                                hiveList
+                                                                    .removeAt(
+                                                                        index);
+                                                                hiveMap
+                                                                    .removeAt(
+                                                                        index);
+                                                                box.deleteAt(
+                                                                    index);
+                                                              },
+                                                              child: const Icon(
+                                                                CupertinoIcons
+                                                                    .delete,
+                                                                color:
+                                                                    Colors.red,
+                                                                size: 25,
+                                                              ),
+                                                            ),
+                                                            title: Text(
+                                                              "${hiveMap[index]}",
+                                                              style: kTextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  size: 20),
+                                                            ),
+                                                            subtitle: Text(
+                                                              "${hiveList[index]}",
+                                                              style: kTextStyle(
+                                                                  color: Colors
+                                                                      .red,
+                                                                  size: 18),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }),
+                                                    ),
+                                                  );
+                                                },
+                                                valueListenable: _counter,
                                               ),
                                               GestureDetector(
                                                 onTap: () =>
@@ -905,7 +1155,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                                     height: 45,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: const Color(0xff262626),
+                                      color: backgroundColor2,
                                       border: Border.all(
                                           color: textColor, width: 2),
                                     ),
@@ -930,7 +1180,9 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                             controller: calculateController,
                             maxLines: 1,
                             style: kTextStyle(
-                                fontWeight: FontWeight.w400, size: 28),
+                                fontWeight: FontWeight.w400,
+                                size: 28,
+                                color: textColor),
                             textAlign: TextAlign.end,
                             readOnly: true,
                             decoration: const InputDecoration(
@@ -952,7 +1204,9 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                             maxLines: 1,
                             controller: resultController,
                             style: kTextStyle(
-                                fontWeight: FontWeight.w700, size: 28),
+                                fontWeight: FontWeight.w700,
+                                size: 28,
+                                color: textColor),
                             textAlign: TextAlign.end,
                             readOnly: true,
                             keyboardType: TextInputType.number,
@@ -1008,11 +1262,11 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                   primary: false,
                   children: [
                     _itemContanierMainButton(
-                      "xⁿ",
+                      "(",
                       menuText2,
                     ),
                     _itemContanierMainButton(
-                      "%",
+                      ")",
                       menuText2,
                     ),
                     _itemContanierMainButton(
@@ -1024,7 +1278,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                         animCricleClear = 20;
                         setState(() {});
 
-                        Timer(Duration(milliseconds: 1000), () async {
+                        Timer(const Duration(milliseconds: 1000), () async {
                           animCricleClear = 0;
                           setState(() {});
                         });
@@ -1095,7 +1349,7 @@ class _BestClaculatePageState extends State<BestClaculatePage>
                       textColor,
                     ),
                     _itemContanier(
-                      "( )",
+                      "%",
                       textColor,
                     ),
                     _itemContanierMainButton1(
@@ -1217,14 +1471,14 @@ class _BestClaculatePageState extends State<BestClaculatePage>
             ),
             body: TabBarView(
               controller: _tabController1,
-              children: const <Widget>[
-                MyWidgetDistance(),
-                MyWidgetArea(),
-                MyWidgetMass(),
-                MyWidgetVolume(),
-                MyWidgetTemperature(),
-                MyWidgetFuel(),
-                MyWidgetCooking(),
+              children: <Widget>[
+                MyWidgetMeasurments(listMap, listDistance),
+                MyWidgetMeasurments(listMapArea, listArea),
+                MyWidgetMeasurments(listMapMassMass, listMass),
+                MyWidgetMeasurments(listMapVolume, listVolume),
+                MyWidgetMeasurments(listMapTemperature, listTemprature),
+                MyWidgetMeasurments(listMapFuel, listFuel),
+                MyWidgetMeasurments(listMapCooking, listCooking),
               ],
             ),
           ),
@@ -1289,6 +1543,8 @@ class _BestClaculatePageState extends State<BestClaculatePage>
       onTap: () {
         setState(() {
           writer(text);
+          // bestCalculate(text);
+          // buttinCalculator(text);
         });
       },
       child: Container(
@@ -1320,6 +1576,8 @@ class _BestClaculatePageState extends State<BestClaculatePage>
     return scaleWidget(
       onTap: () {
         writer(text);
+        // bestCalculate(text);
+        // buttinCalculator(text);
       },
       scale: 0.8,
       child: Container(
@@ -1339,6 +1597,8 @@ class _BestClaculatePageState extends State<BestClaculatePage>
     return scaleWidget(
       onTap: () {
         writer(text);
+        // bestCalculate(text);
+        // buttinCalculator(text);
       },
       scale: 0.8,
       child: Container(
@@ -1358,6 +1618,8 @@ class _BestClaculatePageState extends State<BestClaculatePage>
     return scaleWidget(
       onTap: () {
         writer(text);
+        // bestCalculate(text);
+        // buttinCalculator(text);
       },
       scale: 0.8,
       child: Container(

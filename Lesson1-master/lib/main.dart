@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:lesson1/best_calculator/best_currency_model.dart';
-import 'package:lesson1/best_calculator/page.dart';
-import 'package:lesson1/calculator/calculator_page.dart';
-import 'package:lesson1/value_listenable.dart';
+import 'package:lesson1/best_calculator/best_currency/best_currency_model/best_currency_model.dart';
+import 'package:lesson1/best_calculator/main_page.dart';
 
 //hive uchun box
 late Box box;
@@ -33,7 +31,9 @@ class LessonApp extends StatelessWidget {
       ),
       // onGenerateRoute: (settings) => Routes.generateRoute(settings),
 
-      home: BestClaculatePage("Enter an optional word"),
+      home: 
+      // CalculatorPage(),
+      MainPage("Enter an optional word"),
     );
   }
 }
